@@ -46,7 +46,6 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .stat.yes { --stat-color:#15803d; }
 .stat.no { --stat-color:#b91c1c; }
 .stat.notsent { --stat-color:#d97706; }
-.stat.sent { --stat-color:#2f7a1e; }
 .chart { background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:12px 14px; margin-bottom:20px; }
 .chart-title { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
 .bar { display:flex; height:22px; border-radius:8px; overflow:hidden; background:var(--m50); position:relative; }
@@ -271,9 +270,8 @@ function render(){
   const pending = apps.filter(a=>outcome(a)==='Väntar svar').length;
   const interviews = apps.filter(a=>outcome(a)==='Intervju').length;
   const notsent = apps.filter(a=>(a.status||'Skickad')==='Inte skickad').length;
-  const sent = total - notsent;
   $('stats').innerHTML = [
-    [total,'Totalt','total'], [notsent,'Ej skickad','notsent'], [sent,'Skickad','sent'],
+    [total,'Totalt','total'], [notsent,'Ej skickad','notsent'],
     [pending,'Väntar svar','pending'], [interviews,'Intervjuer','interview'],
     [yes,'Ja','yes'], [no,'Nej','no']
   ].map(([n,l,c])=>`<div class="stat ${c}"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join('');
