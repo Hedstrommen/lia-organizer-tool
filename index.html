@@ -25,7 +25,12 @@ h1 { font-size:1.9rem; background:linear-gradient(90deg,var(--m800),var(--m500),
 .btn-ghost:hover { background:var(--m200); }
 .btn-danger { background:#fee2e2; color:#b91c1c; }
 .btn-danger:hover { background:#fecaca; }
-.toolbar { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+.toolbar { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center; }
+.period { display:inline-flex; align-items:center; gap:6px; padding:9px 14px; border:2px solid var(--border); border-radius:10px; background:var(--card); }
+.period .icon { font-size:1rem; }
+.period label { margin:0; }
+.period input { width:150px; padding:4px 6px; border:none; border-radius:6px; font-size:.9rem; background:transparent; color:var(--text); outline:none; }
+.period input:focus { border:none; box-shadow:none; }
 .search { flex:1; min-width:220px; position:relative; }
 .search input { width:100%; padding:11px 14px 11px 40px; border:2px solid var(--border); border-radius:10px; background:var(--card); font-size:1rem; color:var(--text); outline:none; }
 .search input:focus { border-color:var(--m500); box-shadow:0 0 0 3px rgba(63,143,43,.15); }
@@ -114,6 +119,10 @@ textarea { resize:vertical; min-height:70px; }
       <option value="company-desc">Företag Ö–A</option>
       <option value="updated-desc">Senast ändrad</option>
     </select>
+    <div class="period" title="Din LIA-period – gäller alla ansökningar">
+      <span class="icon">🗓️</span><label for="period">LIA-period</label>
+      <input id="period" placeholder="t.ex. vt 2026">
+    </div>
     <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer">▾ Visa alla</button>
     <button class="btn btn-ghost" onclick="setAllCollapsed(true)" title="Dölj alla detaljer">▴ Dölj alla</button>
   </div>
@@ -150,7 +159,6 @@ textarea { resize:vertical; min-height:70px; }
         </div>
         <div><label for="answerDate">Svarsdatum</label><input id="answerDate" type="date"></div>
         <div><label for="city">Ort</label><input id="city" placeholder="t.ex. Stockholm"></div>
-        <div><label for="period">LIA-period</label><input id="period" placeholder="t.ex. vt 2026, 10 veckor"></div>
         <div><label for="businessType">Verksamhetstyp</label>
           <select id="businessType" class="sort" style="width:100%">
             <option value="">– Välj –</option>
@@ -180,6 +188,7 @@ const KEY = 'lia-applications-v1';
 const $ = id => document.getElementById(id);
 let apps = [];
 const COLLAPSE_KEY = 'lia-collapsed';
+const PERIOD_KEY = 'lia-period';
 let collapsed = new Set();
 let filter = 'all';
 
@@ -188,6 +197,8 @@ const STATUSES = ['Inte skickad','Skickad','Intervju','Klar'];
 
 function load(){ try{ apps = JSON.parse(localStorage.getItem(KEY)) || []; } catch{ apps = []; } try{ collapsed = new Set(JSON.parse(localStorage.getItem(COLLAPSE_KEY)) || []); } catch{ collapsed = new Set(); } }
 function saveCollapsed(){ localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsed])); }
+function loadPeriod(){ $('period').value = localStorage.getItem(PERIOD_KEY) || ''; }
+function savePeriod(){ localStorage.setItem(PERIOD_KEY, $('period').value.trim()); }
 function toggleCard(id){ const el=$('card-'+id); if(!el) return; if(collapsed.has(id)) collapsed.delete(id); else collapsed.add(id); saveCollapsed(); el.classList.toggle('collapsed', collapsed.has(id)); }
 function setAllCollapsed(v){ apps.forEach(a => { if(v) collapsed.add(a.id); else collapsed.delete(a.id); }); saveCollapsed(); render(); }
 function save(){ localStorage.setItem(KEY, JSON.stringify(apps)); }
@@ -197,7 +208,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('sho
 
 function matches(a, q){
   q = q.toLowerCase();
-  return [a.company,a.city,a.period,a.businessType,a.notes,a.status,a.contactName,a.contactTitle,a.contactEmail,a.contactPhone]
+  return [a.company,a.city,a.businessType,a.notes,a.status,a.contactName,a.contactTitle,a.contactEmail,a.contactPhone]
     .some(v => String(v||'').toLowerCase().includes(q));
 }
 
@@ -268,7 +279,6 @@ function render(){
       <div class="grid">
         <div><span class="lbl">Ansökningsdatum</span><span class="val">📅 ${esc(a.applyDate)||'—'}</span></div>
         <div><span class="lbl">Sista ansökningsdag</span><span class="val">⏰ ${esc(a.deadline)||'—'}</span></div>
-        <div><span class="lbl">LIA-period</span><span class="val">🗓️ ${esc(a.period)||'—'}</span></div>
         <div><span class="lbl">Ort</span><span class="val">📍 ${esc(a.city)||'—'}</span></div>
         <div><span class="lbl">Kontakt</span><span class="val">${contactShort(a)}</span></div>
       </div>
@@ -290,7 +300,7 @@ function openModal(id){
   const a = id ? apps.find(x=>x.id===id) : null;
   $('modalTitle').textContent = a ? 'Redigera ansökan' : 'Ny ansökan';
   $('id').value = a ? a.id : '';
-  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','period','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
+  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
     $(f).value = a ? (a[f] ?? '') : '';
   if (!a) { $('answer').value = 'pending'; $('status').value = 'Skickad'; }
   $('modal').showModal();
@@ -326,7 +336,7 @@ $('form').addEventListener('submit', e => {
   const data = {
     id: id || uid(), updated: new Date().toISOString()
   };
-  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','period','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
+  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
     data[f] = $(f).value.trim();
   if (data.answer === 'pending') data.answerDate = '';
   const i = apps.findIndex(x=>x.id===data.id);
@@ -393,6 +403,8 @@ $('filters').addEventListener('click', e => {
   filter = b.dataset.f; render();
 });
 
+$('period').addEventListener('input', savePeriod);
+loadPeriod();
 load(); render();
 </script>
 </body>
