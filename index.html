@@ -150,7 +150,6 @@ textarea { resize:vertical; min-height:70px; }
         </div>
         <div><label for="answerDate">Svarsdatum</label><input id="answerDate" type="date"></div>
         <div><label for="city">Ort</label><input id="city" placeholder="t.ex. Stockholm"></div>
-        <div><label for="role">LIA-roll / tjänst</label><input id="role" placeholder="t.ex. .NET-utvecklare"></div>
         <div><label for="period">LIA-period</label><input id="period" placeholder="t.ex. vt 2026, 10 veckor"></div>
         <div><label for="businessType">Verksamhetstyp</label>
           <select id="businessType" class="sort" style="width:100%">
@@ -198,7 +197,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('sho
 
 function matches(a, q){
   q = q.toLowerCase();
-  return [a.company,a.city,a.role,a.period,a.businessType,a.notes,a.status,a.contactName,a.contactTitle,a.contactEmail,a.contactPhone]
+  return [a.company,a.city,a.period,a.businessType,a.notes,a.status,a.contactName,a.contactTitle,a.contactEmail,a.contactPhone]
     .some(v => String(v||'').toLowerCase().includes(q));
 }
 
@@ -269,7 +268,6 @@ function render(){
       <div class="grid">
         <div><span class="lbl">Ansökningsdatum</span><span class="val">📅 ${esc(a.applyDate)||'—'}</span></div>
         <div><span class="lbl">Sista ansökningsdag</span><span class="val">⏰ ${esc(a.deadline)||'—'}</span></div>
-        <div><span class="lbl">Roll</span><span class="val">💼 ${esc(a.role)||'—'}</span></div>
         <div><span class="lbl">LIA-period</span><span class="val">🗓️ ${esc(a.period)||'—'}</span></div>
         <div><span class="lbl">Ort</span><span class="val">📍 ${esc(a.city)||'—'}</span></div>
         <div><span class="lbl">Kontakt</span><span class="val">${contactShort(a)}</span></div>
@@ -292,7 +290,7 @@ function openModal(id){
   const a = id ? apps.find(x=>x.id===id) : null;
   $('modalTitle').textContent = a ? 'Redigera ansökan' : 'Ny ansökan';
   $('id').value = a ? a.id : '';
-  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','role','period','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
+  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','period','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
     $(f).value = a ? (a[f] ?? '') : '';
   if (!a) { $('answer').value = 'pending'; $('status').value = 'Skickad'; }
   $('modal').showModal();
@@ -328,7 +326,7 @@ $('form').addEventListener('submit', e => {
   const data = {
     id: id || uid(), updated: new Date().toISOString()
   };
-  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','role','period','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
+  for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','period','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
     data[f] = $(f).value.trim();
   if (data.answer === 'pending') data.answerDate = '';
   const i = apps.findIndex(x=>x.id===data.id);
