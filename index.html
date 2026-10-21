@@ -49,12 +49,11 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .card-head { display:flex; align-items:center; gap:12px; cursor:pointer; flex-wrap:wrap; }
 .card-head .company { flex:1 1 auto; min-width:120px; }
 .head-badges { display:flex; gap:6px; flex-wrap:wrap; }
-.head-city { color:var(--muted); font-size:.9rem; white-space:nowrap; }
 .toggle { margin-left:auto; background:none; border:none; cursor:pointer; font-size:1.1rem; color:var(--m600); transition:transform .15s; }
 .card.collapsed .toggle { transform:rotate(-90deg); }
 .card-details { }
 .card.collapsed .card-details { display:none; }
-.card:not(.collapsed) .head-badges, .card:not(.collapsed) .head-city { display:none; }
+.card:not(.collapsed) .head-badges { display:none; }
 .company { font-size:1.25rem; font-weight:700; color:var(--m800); }
 .company a { color:inherit; text-decoration:none; border-bottom:2px solid var(--m300); }
 .company a:hover { color:var(--m600); }
@@ -124,7 +123,7 @@ textarea { resize:vertical; min-height:70px; }
       <input id="period" placeholder="t.ex. vt 2026">
     </div>
     <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer">▾ Visa alla</button>
-    <button class="btn btn-ghost" onclick="setAllCollapsed(true)" title="Dölj alla detaljer">▴ Dölj alla</button>
+    <button class="btn btn-ghost" onclick="setAllCollapsed(true)" title="Minimera alla detaljer">▴ Minimera alla</button>
   </div>
 
   <div class="filters" id="filters"></div>
@@ -265,11 +264,10 @@ function render(){
       : a.answer==='yes' ? '<span class="badge b-yes">✅ Ja</span>' : '<span class="badge b-no">❌ Nej</span>';
     const site = a.website ? `<a href="${esc(a.website)}" target="_blank" rel="noopener">🌐 ${esc(a.website.replace(/^https?:\/\//,'').replace(/\/$/,''))}</a>` : '';
     return `<div class="card ${collapsed.has(a.id)?'collapsed':''}" id="card-${a.id}">
-      <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/dölja detaljer">
+      <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
         <div class="company">${esc(a.company)}</div>
-        <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${ans}</div>
-        <div class="head-city">📍 ${esc(a.city)||'—'}</div>
-        <button class="toggle" aria-label="Visa/dölj detaljer">▾</button>
+        <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}</div>
+        <button class="toggle" aria-label="Visa/minimera detaljer">▾</button>
       </div>
       <div class="card-details">
       <div class="card-top">
