@@ -130,7 +130,7 @@ textarea { resize:vertical; min-height:70px; }
       <input type="hidden" id="id">
       <div class="form-grid">
         <div class="full"><label for="company">Företagsnamn *</label><input id="company" required maxlength="100"></div>
-        <div><label for="applyDate">Ansökningsdatum *</label><input id="applyDate" type="date" required></div>
+        <div><label for="applyDate">Ansökningsdatum</label><input id="applyDate" type="date"></div>
         <div><label for="deadline">Sista ansökningsdag</label><input id="deadline" type="date"></div>
         <div class="full"><label for="website">Länk till företagets webbplats</label><input id="website" type="url" placeholder="https://…"></div>
         <div><label for="status">Status</label>
@@ -294,7 +294,7 @@ function openModal(id){
   $('id').value = a ? a.id : '';
   for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','role','period','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
     $(f).value = a ? (a[f] ?? '') : '';
-  if (!a) { $('applyDate').valueAsDate = new Date(); $('answer').value = 'pending'; $('status').value = 'Skickad'; }
+  if (!a) { $('answer').value = 'pending'; $('status').value = 'Skickad'; }
   $('modal').showModal();
 }
 function editApp(id){ openModal(id); }
