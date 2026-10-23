@@ -77,9 +77,11 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .legend-item { display:inline-flex; align-items:center; gap:5px; }
 .legend-dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
 @media (max-width:560px){ .stats{gap:6px;} .stat{padding:10px 8px; border-left-width:4px;} .stat .num{font-size:1.35rem;} .stat .lbl{font-size:.54rem; letter-spacing:.3px;} }
-.filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
-.chip { padding:7px 14px; border-radius:999px; border:2px solid var(--border); background:var(--card); color:var(--m800); font-size:.85rem; font-weight:600; cursor:pointer; }
-.chip.active { background:#2f7a1e; border-color:#2f7a1e; color:#fff; }
+.filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; margin-top:16px; }
+.chip { padding:6px 14px; border-radius:999px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:.85rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:.15s; }
+.chip:hover { border-color:var(--m400); color:var(--m700); }
+.chip .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+.chip.active { background:var(--m600); border-color:var(--m600); color:#fff; }
 .card { background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:18px; margin-bottom:14px; border:1px solid var(--m100); border-left:5px solid var(--card-color,var(--m300)); transition:.15s; }
 .card.o-notsent { --card-color:#d97706; }
 .card.o-wait { --card-color:#d9a441; }
@@ -304,9 +306,10 @@ function render(){
   ].map(([n,l,c])=>`<div class="stat ${c}"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join('');
   renderChart();
 
-  const chips = [['all','Alla'],['pending','⏳ Väntar'],['yes','✅ Ja'],['no','❌ Nej'],...STATUSES.map(s=>[s,s])];
+  const CHIP_DOTS = {'pending':'#d9a441','yes':'#15803d','no':'#b91c1c','Inte skickad':'#d97706','Skickad':'#2f7a1e','Intervju':'#1d4ed8','Klar':'#6b7280'};
+  const chips = [['all','Alla'],['pending','Väntar'],['yes','Ja'],['no','Nej'],...STATUSES.map(s=>[s,s])];
   $('filters').innerHTML = chips.map(([v,l]) =>
-    `<button class="chip ${filter===v?'active':''}" data-f="${v}">${l}</button>`).join('');
+    `<button class="chip ${filter===v?'active':''}" data-f="${v}">${CHIP_DOTS[v]?`<span class="dot" style="background:${CHIP_DOTS[v]}"></span>`:''}${l}</button>`).join('');
 
   if (!list.length){
     $('list').innerHTML = `<div class="empty"><div class="big">🗂️</div><h3>${total ? 'Inga träffar' : 'Inga ansökningar än'}</h3><p>${total ? 'Prova att ändra sökning eller filter.' : 'Klicka på “＋ Ny ansökan” för att lägga till din första LIA-ansökan!'}</p></div>`;
