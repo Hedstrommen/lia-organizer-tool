@@ -77,7 +77,12 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
 .chip { padding:7px 14px; border-radius:999px; border:2px solid var(--border); background:var(--card); color:var(--m800); font-size:.85rem; font-weight:600; cursor:pointer; }
 .chip.active { background:#2f7a1e; border-color:#2f7a1e; color:#fff; }
-.card { background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:18px; margin-bottom:14px; border:1px solid var(--m100); transition:.15s; }
+.card { background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:18px; margin-bottom:14px; border:1px solid var(--m100); border-left:5px solid var(--card-color,var(--m300)); transition:.15s; }
+.card.o-notsent { --card-color:#d97706; }
+.card.o-wait { --card-color:#d9a441; }
+.card.o-interview { --card-color:#1d4ed8; }
+.card.o-yes { --card-color:#15803d; }
+.card.o-no { --card-color:#b91c1c; }
 .card:hover { box-shadow:0 6px 20px rgba(93,64,36,.16); }
 .card-top { display:flex; flex-direction:column; gap:4px; }
 .card-head { display:flex; align-items:center; gap:12px; cursor:pointer; flex-wrap:wrap; }
@@ -87,7 +92,7 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .card.collapsed .toggle { transform:rotate(-90deg); }
 .card-details { }
 .card.collapsed .card-details { display:none; }
-.card:not(.collapsed) .head-badges { display:none; }
+.card:not(.collapsed) .head-badges .b-type { display:none; }
 .company { font-size:1.25rem; font-weight:700; color:var(--m800); }
 .company a { color:inherit; text-decoration:none; border-bottom:2px solid var(--m300); }
 .company a:hover { color:var(--m600); }
@@ -303,11 +308,12 @@ function render(){
     if (a.contactPhone) parts.push('📞 ' + esc(a.contactPhone));
     return parts.join('<br>') || '—';
   };
+  const OUTCOME_CLS = {'Inte skickad':'o-notsent','V\u00e4ntar svar':'o-wait','Intervju':'o-interview','Ja':'o-yes','Nej':'o-no'};
   $('list').innerHTML = list.map(a=>{
     const ans = a.answer==='pending' ? '<span class="badge b-pending">⏳ Väntar på svar</span>'
       : a.answer==='yes' ? '<span class="badge b-yes">✅ Ja</span>' : '<span class="badge b-no">❌ Nej</span>';
     const site = a.website ? `<a href="${esc(a.website)}" target="_blank" rel="noopener">🌐 ${esc(a.website.replace(/^https?:\/\//,'').replace(/\/$/,''))}</a>` : '';
-    return `<div class="card ${collapsed.has(a.id)?'collapsed':''}" id="card-${a.id}">
+    return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
         <div class="company">${esc(a.company)}</div>
         <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}</div>
