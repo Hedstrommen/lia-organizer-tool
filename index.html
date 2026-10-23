@@ -128,7 +128,7 @@ textarea { resize:vertical; min-height:70px; }
 .hint { font-size:.8rem; color:var(--muted); margin-top:14px; text-align:center; }
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#7b4b2a; color:#fff; padding:12px 22px; border-radius:999px; font-size:.9rem; opacity:0; transition:.3s; z-index:99; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
-@media (max-width:560px){ .form-grid{grid-template-columns:1fr;} h1{font-size:1.5rem;} }
+@media (max-width:560px){ .form-grid{grid-template-columns:1fr;} h1{font-size:1.5rem;} .btn .btn-txt{display:none;} header .btn{padding:10px 12px;} }
 </style>
 </head>
 <body>
@@ -139,10 +139,10 @@ textarea { resize:vertical; min-height:70px; }
       <div class="subtitle">Håll koll på dina LIA-ansökningar – allt sparas lokalt i din webbläsare.</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-ghost" id="exportBtn" title="Spara alla ansökningar som en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> Exportera</button>
-      <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 6h4v11h6V10h4l-7-7-7 7z"/></svg> Importera</button>
+      <button class="btn btn-ghost" id="exportBtn" title="Spara alla ansökningar som en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> <span class="btn-txt">Exportera</span></button>
+      <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 6h4v11h6V10h4l-7-7-7 7z"/></svg> <span class="btn-txt">Importera</span></button>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
-      <button class="btn btn-primary" id="addBtn"><svg class="ico" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Ny ansökan</button>
+      <button class="btn btn-primary" id="addBtn"><svg class="ico" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> <span class="btn-txt">Ny ansökan</span></button>
     </div>
   </header>
 
