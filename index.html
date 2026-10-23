@@ -58,8 +58,8 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .stat.notsent { --stat-color:#d97706; }
 .chart { background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; margin-bottom:28px; }
 .chart-title { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
-.bar { display:flex; height:22px; border-radius:8px; overflow:hidden; background:var(--m50); position:relative; }
-.seg { min-width:0; transition:filter .15s; cursor:pointer; }
+.bar { display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--m50); position:relative; }
+.seg { min-width:10px; transition:filter .15s; cursor:pointer; }
 .seg:hover { filter:brightness(1.1); }
 .seg.c-notsent { background:#d97706; }
 .seg.c-sent { background:#2f7a1e; }
@@ -68,6 +68,7 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .seg.c-no { background:#b91c1c; }
 .seg.c-wait { background:#d9a441; }
 .seg-label { position:fixed; background:#3b2a1a; color:#fff; font-size:.8rem; padding:6px 10px; border-radius:8px; pointer-events:none; opacity:0; transition:opacity .12s; z-index:98; white-space:nowrap; }
+.seg-label::after { content:''; position:absolute; bottom:-5px; left:14px; border-width:5px 5px 0 5px; border-style:solid; border-color:#3b2a1a transparent transparent transparent; }
 .seg-label.show { opacity:1; }
 .chart-legend { display:flex; flex-wrap:wrap; gap:6px 12px; margin-top:8px; font-size:.75rem; color:var(--muted); }
 .legend-item { display:inline-flex; align-items:center; gap:5px; }
@@ -464,13 +465,13 @@ function renderChart(){
   if (!sum){ chart.hidden = true; return; }
   chart.hidden = false;
   bar.innerHTML = OUTCOMES.filter(o => counts[o]>0).map(o =>
-    `<div class="seg ${cls[o]}" data-name="${esc(o)}" data-count="${counts[o]}" style="width:${(counts[o]/sum*100).toFixed(2)}%" role="button" tabindex="0" aria-label="${esc(o)}: ${counts[o]}"></div>`).join('');
+    `<div class="seg ${cls[o]}" data-name="${esc(o)}" data-count="${counts[o]}" data-pct="${(counts[o]/sum*100).toFixed(1)}" style="width:${(counts[o]/sum*100).toFixed(2)}%" role="button" tabindex="0" aria-label="${esc(o)}: ${counts[o]}"></div>`).join('');
   legend.innerHTML = OUTCOMES.map(o =>
     `<span class="legend-item"><span class="legend-dot" style="background:${colors[o]}"></span>${esc(o)} (${counts[o]})</span>`).join('');
 }
 function showSegLabel(seg, ev){
   const t = $('segLabel');
-  t.textContent = `${seg.dataset.name}: ${seg.dataset.count} st`;
+  t.textContent = `${seg.dataset.name}: ${seg.dataset.count} st (${seg.dataset.pct}%)`;
   t.classList.add('show');
   const pad = 10, r = t.getBoundingClientRect();
   let x = (ev.clientX ?? window.innerWidth/2) + pad, y = (ev.clientY ?? 0) + pad;
