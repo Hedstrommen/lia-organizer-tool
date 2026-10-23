@@ -90,6 +90,8 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .card-top { display:flex; flex-direction:column; gap:4px; }
 .card-head { display:flex; align-items:center; gap:12px; cursor:pointer; flex-wrap:wrap; }
 .card-head .company { flex:1 1 auto; min-width:120px; }
+.site-link { font-size:.8rem; font-weight:400; color:var(--m600); text-decoration:none; margin-left:6px; border-bottom:1px solid var(--m300); }
+.site-link:hover { color:var(--m500); }
 .head-badges { display:flex; gap:6px; flex-wrap:wrap; }
 .toggle { margin-left:auto; background:none; border:none; cursor:pointer; font-size:1.1rem; color:var(--m600); transition:transform .15s; }
 .card.collapsed .toggle { transform:rotate(-90deg); }
@@ -319,17 +321,14 @@ function render(){
   $('list').innerHTML = list.map(a=>{
     const ans = a.answer==='pending' ? '<span class="badge b-pending">⏳ Väntar på svar</span>'
       : a.answer==='yes' ? '<span class="badge b-yes">✅ Ja</span>' : '<span class="badge b-no">❌ Nej</span>';
-    const site = a.website ? `<a href="${esc(a.website)}" target="_blank" rel="noopener">🌐 ${esc(a.website.replace(/^https?:\/\//,'').replace(/\/$/,''))}</a>` : '';
+    const siteShort = a.website ? esc(a.website.replace(/^https?:\/\//,'').replace(/\/$/,'')) : '';
     return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
-        <div class="company">${esc(a.company)}</div>
+        <div class="company">${esc(a.company)}${siteShort?` <a class="site-link" href="${esc(a.website)}" target="_blank" rel="noopener">${siteShort}</a>`:''}</div>
         <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}</div>
         <button class="toggle" aria-label="Visa/minimera detaljer">▾</button>
       </div>
       <div class="card-details">
-      <div class="card-top">
-        <div class="val">${site || '—'}</div>
-      </div>
       <div class="badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}${ans}${a.answerDate?`<span class="badge b-pending">Svar: ${esc(a.answerDate)}</span>`:''}</div>
       <div class="grid">
         <div><span class="lbl">Ansökningsdatum</span><span class="val">📅 ${esc(a.applyDate)||'—'}</span></div>
