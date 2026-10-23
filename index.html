@@ -257,6 +257,7 @@ let apps = [];
 const COLLAPSE_KEY = 'lia-collapsed';
 const PERIOD_KEY = 'lia-period';
 const BACKUP_KEY = 'lia-last-backup';
+const VIEW_KEY = 'lia-view';
 let collapsed = new Set();
 let filter = 'all';
 
@@ -267,6 +268,13 @@ function load(){ try{ apps = JSON.parse(localStorage.getItem(KEY)) || []; } catc
 function saveCollapsed(){ localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsed])); }
 function loadPeriod(){ $('period').value = localStorage.getItem(PERIOD_KEY) || ''; }
 function savePeriod(){ localStorage.setItem(PERIOD_KEY, $('period').value.trim()); }
+function saveView(){ localStorage.setItem(VIEW_KEY, JSON.stringify({ q:$('search').value, sort:$('sort').value, filter })); }
+function loadView(){
+  let v; try{ v = JSON.parse(localStorage.getItem(VIEW_KEY)) || {}; } catch{ v = {}; }
+  if (v.q) $('search').value = v.q;
+  if (v.sort) $('sort').value = v.sort;
+  if (v.filter) filter = v.filter;
+}
 function toggleCard(id){ const el=$('card-'+id); if(!el) return; if(collapsed.has(id)) collapsed.delete(id); else collapsed.add(id); saveCollapsed(); el.classList.toggle('collapsed', collapsed.has(id)); }
 function setAllCollapsed(v){ apps.forEach(a => { if(v) collapsed.add(a.id); else collapsed.delete(a.id); }); saveCollapsed(); render(); }
 function save(){ localStorage.setItem(KEY, JSON.stringify(apps)); }
@@ -513,15 +521,15 @@ $('importFile').addEventListener('change', e => {
 });
 $('cancelBtn').onclick = () => $('modal').close();
 $('modal').addEventListener('close', () => $('form').reset());
-$('search').addEventListener('input', render);
-$('sort').addEventListener('change', render);
+$('search').addEventListener('input', () => { saveView(); render(); });
+$('sort').addEventListener('change', () => { saveView(); render(); });
 $('filters').addEventListener('click', e => {
   const b = e.target.closest('.chip'); if(!b) return;
-  filter = b.dataset.f; render();
+  filter = b.dataset.f; saveView(); render();
 });
 
 $('period').addEventListener('input', savePeriod);
-loadPeriod();
+loadPeriod(); loadView();
 function outcome(a){
   if ((a.status||'Skickad')==='Inte skickad') return 'Inte skickad';
   if (a.answer==='no') return 'Nej';
