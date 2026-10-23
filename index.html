@@ -22,43 +22,47 @@
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Segoe UI', system-ui, -apple-system, sans-serif; background:linear-gradient(160deg,#f4f9f0 0%,#e8f0e4 50%,#d8e9e4 100%); min-height:100vh; color:var(--text); }
-.container { max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
-header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:20px; }
-h1 { font-size:1.9rem; background:linear-gradient(90deg,var(--m800),var(--m500),var(--m600)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.container { max-width:1100px; margin:0 auto; padding:32px 16px 60px; }
+header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:28px; }
+h1 { font-size:1.9rem; color:var(--m700); }
 .subtitle { color:var(--muted); font-size:.95rem; margin-top:2px; }
 .btn { border:none; cursor:pointer; font-weight:600; padding:10px 18px; border-radius:10px; font-size:.95rem; transition:.15s; display:inline-flex; align-items:center; gap:6px; }
-.btn-primary { background:linear-gradient(135deg,var(--m500),#3e8b7a); color:#fff; }
+.ico { width:1em; height:1em; flex:0 0 auto; fill:currentColor; vertical-align:-0.125em; }
+.btn-primary { background:var(--m600); color:#fff; }
+.btn-primary:hover { background:var(--m700); }
 .btn-primary:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(47,122,30,.30); }
 .btn-ghost { background:var(--m100); color:var(--m800); }
 .btn-ghost:hover { background:var(--m200); }
 .btn-danger { background:#fee2e2; color:#b91c1c; }
 .btn-danger:hover { background:#fecaca; }
-.toolbar { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center; }
+.toolbar { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; align-items:center; }
+.toolbar-row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.toolbar-row.secondary { margin-left:auto; }
 .period { display:inline-flex; align-items:center; gap:6px; padding:9px 14px; border:2px solid var(--border); border-radius:10px; background:var(--card); }
-.period .icon { font-size:1rem; }
+.period .icon { font-size:1rem; display:inline-flex; align-items:center; }
 .period label { margin:0; }
 .period input { width:150px; padding:4px 6px; border:none; border-radius:6px; font-size:.9rem; background:transparent; color:var(--text); outline:none; }
 .period input:focus { border:none; box-shadow:none; }
-.search { flex:1; min-width:220px; position:relative; }
+.search { flex:1 1 100%; min-width:220px; position:relative; }
 .search input { width:100%; padding:11px 14px 11px 40px; border:2px solid var(--border); border-radius:10px; background:var(--card); font-size:1rem; color:var(--text); outline:none; }
 .search input:focus { border-color:var(--m500); box-shadow:0 0 0 3px rgba(63,143,43,.15); }
 .search svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:18px; height:18px; fill:var(--m400); }
 select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:10px; background:var(--card); font-size:.95rem; color:var(--text); outline:none; cursor:pointer; }
-.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px; }
 @media (min-width:900px){ .stats{grid-template-columns:repeat(6,1fr);} }
-.stat { background:var(--card); border-radius:10px; padding:8px 10px; box-shadow:var(--shadow); border-left:4px solid var(--stat-color,var(--m600)); display:flex; flex-direction:column; gap:1px; min-width:0; }
-.stat .num { font-size:1.1rem; font-weight:700; color:var(--stat-color,var(--m700)); line-height:1.2; }
-.stat .lbl { font-size:.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.stat { background:var(--card); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); border-left:4px solid var(--stat-color,var(--m600)); display:flex; flex-direction:column; gap:2px; min-width:0; }
+.stat .num { font-size:1.7rem; font-weight:800; color:var(--stat-color,var(--m700)); line-height:1.1; }
+.stat .lbl { font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .stat.total { --stat-color:#7b4b2a; }
 .stat.pending { --stat-color:#d9a441; }
 .stat.interview { --stat-color:#1d4ed8; }
 .stat.yes { --stat-color:#15803d; }
 .stat.no { --stat-color:#b91c1c; }
 .stat.notsent { --stat-color:#d97706; }
-.chart { background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:12px 14px; margin-bottom:20px; }
+.chart { background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; margin-bottom:28px; }
 .chart-title { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
-.bar { display:flex; height:22px; border-radius:8px; overflow:hidden; background:var(--m50); position:relative; }
-.seg { min-width:0; transition:filter .15s; cursor:pointer; }
+.bar { display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--m50); position:relative; }
+.seg { min-width:10px; transition:filter .15s; cursor:pointer; }
 .seg:hover { filter:brightness(1.1); }
 .seg.c-notsent { background:#d97706; }
 .seg.c-sent { background:#2f7a1e; }
@@ -67,15 +71,21 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .seg.c-no { background:#b91c1c; }
 .seg.c-wait { background:#d9a441; }
 .seg-label { position:fixed; background:#3b2a1a; color:#fff; font-size:.8rem; padding:6px 10px; border-radius:8px; pointer-events:none; opacity:0; transition:opacity .12s; z-index:98; white-space:nowrap; }
+.seg-label::after { content:''; position:absolute; bottom:-5px; left:14px; border-width:5px 5px 0 5px; border-style:solid; border-color:#3b2a1a transparent transparent transparent; }
 .seg-label.show { opacity:1; }
 .chart-legend { display:flex; flex-wrap:wrap; gap:6px 12px; margin-top:8px; font-size:.75rem; color:var(--muted); }
 .legend-item { display:inline-flex; align-items:center; gap:5px; }
 .legend-dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
-@media (max-width:560px){ .stats{gap:4px;} .stat{padding:6px 4px; border-left-width:3px;} .stat .num{font-size:1rem;} .stat .lbl{font-size:.52rem; letter-spacing:.2px;} }
-.filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+@media (max-width:560px){ .stats{gap:6px;} .stat{padding:10px 8px; border-left-width:4px;} .stat .num{font-size:1.35rem;} .stat .lbl{font-size:.54rem; letter-spacing:.3px;} }
+.filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
 .chip { padding:7px 14px; border-radius:999px; border:2px solid var(--border); background:var(--card); color:var(--m800); font-size:.85rem; font-weight:600; cursor:pointer; }
 .chip.active { background:#2f7a1e; border-color:#2f7a1e; color:#fff; }
-.card { background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:18px; margin-bottom:14px; border:1px solid var(--m100); transition:.15s; }
+.card { background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:18px; margin-bottom:14px; border:1px solid var(--m100); border-left:5px solid var(--card-color,var(--m300)); transition:.15s; }
+.card.o-notsent { --card-color:#d97706; }
+.card.o-wait { --card-color:#d9a441; }
+.card.o-interview { --card-color:#1d4ed8; }
+.card.o-yes { --card-color:#15803d; }
+.card.o-no { --card-color:#b91c1c; }
 .card:hover { box-shadow:0 6px 20px rgba(93,64,36,.16); }
 .card-top { display:flex; flex-direction:column; gap:4px; }
 .card-head { display:flex; align-items:center; gap:12px; cursor:pointer; flex-wrap:wrap; }
@@ -85,8 +95,8 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .card.collapsed .toggle { transform:rotate(-90deg); }
 .card-details { }
 .card.collapsed .card-details { display:none; }
-.card:not(.collapsed) .head-badges { display:none; }
-.company { font-size:1.25rem; font-weight:700; color:var(--m800); }
+.card:not(.collapsed) .head-badges .b-type { display:none; }
+.company { font-size:1.25rem; font-weight:700; color:var(--m700); }
 .company a { color:inherit; text-decoration:none; border-bottom:2px solid var(--m300); }
 .company a:hover { color:var(--m600); }
 .badges { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
@@ -107,7 +117,7 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 dialog { border:none; border-radius:16px; padding:0; width:min(640px,94vw); box-shadow:0 20px 60px rgba(59,42,26,.25); }
 dialog::backdrop { background:rgba(59,42,26,.35); backdrop-filter:blur(2px); }
 .modal-content { background:linear-gradient(180deg,#fff,#eef5ea); border-radius:16px; padding:24px; max-height:88vh; overflow:auto; }
-.modal-content h2 { color:var(--m800); margin-bottom:16px; font-size:1.3rem; }
+.modal-content h2 { color:var(--m700); margin-bottom:16px; font-size:1.3rem; }
 .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .form-grid .full { grid-column:1/-1; }
 label { display:block; font-size:.78rem; font-weight:700; color:var(--m700); text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
@@ -118,21 +128,21 @@ textarea { resize:vertical; min-height:70px; }
 .hint { font-size:.8rem; color:var(--muted); margin-top:14px; text-align:center; }
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#7b4b2a; color:#fff; padding:12px 22px; border-radius:999px; font-size:.9rem; opacity:0; transition:.3s; z-index:99; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
-@media (max-width:560px){ .form-grid{grid-template-columns:1fr;} h1{font-size:1.5rem;} }
+@media (max-width:560px){ .form-grid{grid-template-columns:1fr;} h1{font-size:1.5rem;} .btn .btn-txt{display:none;} header .btn{padding:10px 12px;} }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
     <div>
-      <h1>📋 LIA Organizer</h1>
+      <h1><svg class="ico" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg> LIA Organizer</h1>
       <div class="subtitle">Håll koll på dina LIA-ansökningar – allt sparas lokalt i din webbläsare.</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-ghost" id="exportBtn" title="Spara alla ansökningar som en JSON-fil">⬇ Exportera</button>
-      <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil">⬆ Importera</button>
+      <button class="btn btn-ghost" id="exportBtn" title="Spara alla ansökningar som en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> <span class="btn-txt">Exportera</span></button>
+      <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 6h4v11h6V10h4l-7-7-7 7z"/></svg> <span class="btn-txt">Importera</span></button>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
-      <button class="btn btn-primary" id="addBtn">＋ Ny ansökan</button>
+      <button class="btn btn-primary" id="addBtn"><svg class="ico" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> <span class="btn-txt">Ny ansökan</span></button>
     </div>
   </header>
 
@@ -150,6 +160,7 @@ textarea { resize:vertical; min-height:70px; }
       <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       <input id="search" type="search" placeholder="Sök företag, kontakt, stad, status…" autocomplete="off">
     </div>
+    <div class="toolbar-row">
     <select class="sort" id="sort">
       <option value="date-desc">Ansökningsdatum ↓ (nyast först)</option>
       <option value="date-asc">Ansökningsdatum ↑ (äldst först)</option>
@@ -158,16 +169,19 @@ textarea { resize:vertical; min-height:70px; }
       <option value="updated-desc">Senast ändrad</option>
     </select>
     <div class="period" title="Din LIA-period – gäller alla ansökningar">
-      <span class="icon">🗓️</span><label for="period">LIA-period</label>
+      <span class="icon"><svg class="ico" viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span><label for="period">LIA-period</label>
       <input id="period" placeholder="t.ex. vt 2026">
     </div>
-    <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer">▾ Visa alla</button>
-    <button class="btn btn-ghost" onclick="setAllCollapsed(true)" title="Minimera alla detaljer">▴ Minimera alla</button>
+    <div class="toolbar-row secondary">
+    <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg> Visa alla</button>
+    <button class="btn btn-ghost" onclick="setAllCollapsed(true)" title="Minimera alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M6 8l6 6 6-6H6z"/></svg> Minimera alla</button>
+    </div>
+    </div>
   </div>
 
   <div class="filters" id="filters"></div>
   <div id="list"></div>
-  <p class="hint">🔒 Allt sparas endast på din enhet (localStorage). Ingen data skickas till någon server – andra användare ser aldrig dina ansökningar.</p>
+  <p class="hint"><svg class="ico" viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9zm3 4a2 2 0 0 1 1 3.7V18h-2v-1.3A2 2 0 0 1 12 13z"/></svg> Allt sparas endast på din enhet (localStorage). Ingen data skickas till någon server – andra användare ser aldrig dina ansökningar.</p>
 </div>
 
 <dialog id="modal">
@@ -213,7 +227,7 @@ textarea { resize:vertical; min-height:70px; }
       </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" id="cancelBtn">Avbryt</button>
-        <button type="submit" class="btn btn-primary">💾 Spara</button>
+        <button type="submit" class="btn btn-primary"><svg class="ico" viewBox="0 0 24 24"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4zM12 19a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-9h-4V5h4v5z"/></svg> Spara</button>
       </div>
     </form>
   </div>
@@ -301,11 +315,12 @@ function render(){
     if (a.contactPhone) parts.push('📞 ' + esc(a.contactPhone));
     return parts.join('<br>') || '—';
   };
+  const OUTCOME_CLS = {'Inte skickad':'o-notsent','V\u00e4ntar svar':'o-wait','Intervju':'o-interview','Ja':'o-yes','Nej':'o-no'};
   $('list').innerHTML = list.map(a=>{
     const ans = a.answer==='pending' ? '<span class="badge b-pending">⏳ Väntar på svar</span>'
       : a.answer==='yes' ? '<span class="badge b-yes">✅ Ja</span>' : '<span class="badge b-no">❌ Nej</span>';
     const site = a.website ? `<a href="${esc(a.website)}" target="_blank" rel="noopener">🌐 ${esc(a.website.replace(/^https?:\/\//,'').replace(/\/$/,''))}</a>` : '';
-    return `<div class="card ${collapsed.has(a.id)?'collapsed':''}" id="card-${a.id}">
+    return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
         <div class="company">${esc(a.company)}</div>
         <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}</div>
@@ -463,13 +478,13 @@ function renderChart(){
   if (!sum){ chart.hidden = true; return; }
   chart.hidden = false;
   bar.innerHTML = OUTCOMES.filter(o => counts[o]>0).map(o =>
-    `<div class="seg ${cls[o]}" data-name="${esc(o)}" data-count="${counts[o]}" style="width:${(counts[o]/sum*100).toFixed(2)}%" role="button" tabindex="0" aria-label="${esc(o)}: ${counts[o]}"></div>`).join('');
+    `<div class="seg ${cls[o]}" data-name="${esc(o)}" data-count="${counts[o]}" data-pct="${(counts[o]/sum*100).toFixed(1)}" style="width:${(counts[o]/sum*100).toFixed(2)}%" role="button" tabindex="0" aria-label="${esc(o)}: ${counts[o]}"></div>`).join('');
   legend.innerHTML = OUTCOMES.map(o =>
     `<span class="legend-item"><span class="legend-dot" style="background:${colors[o]}"></span>${esc(o)} (${counts[o]})</span>`).join('');
 }
 function showSegLabel(seg, ev){
   const t = $('segLabel');
-  t.textContent = `${seg.dataset.name}: ${seg.dataset.count} st`;
+  t.textContent = `${seg.dataset.name}: ${seg.dataset.count} st (${seg.dataset.pct}%)`;
   t.classList.add('show');
   const pad = 10, r = t.getBoundingClientRect();
   let x = (ev.clientX ?? window.innerWidth/2) + pad, y = (ev.clientY ?? 0) + pad;
