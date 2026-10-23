@@ -78,6 +78,8 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .legend-dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
 @media (max-width:560px){ .stats{gap:6px;} .stat{padding:10px 8px; border-left-width:4px;} .stat .num{font-size:1.35rem;} .stat .lbl{font-size:.54rem; letter-spacing:.3px;} }
 .filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; margin-top:16px; }
+.list-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.list-title { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
 .chip { padding:6px 14px; border-radius:999px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:.85rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:.15s; }
 .chip:hover { border-color:var(--m400); color:var(--m700); }
 .chip .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
@@ -180,14 +182,16 @@ textarea { resize:vertical; min-height:70px; }
       <span class="icon"><svg class="ico" viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></span><label for="period">LIA-period</label>
       <input id="period" placeholder="t.ex. vt 2026">
     </div>
-    <div class="toolbar-row secondary">
-    <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg> Visa alla</button>
-    <button class="btn btn-ghost" onclick="setAllCollapsed(true)" title="Minimera alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M6 8l6 6 6-6H6z"/></svg> Minimera alla</button>
-    </div>
     </div>
   </div>
 
   <div class="filters" id="filters"></div>
+  <div class="list-header"><span class="list-title">Ansökningar</span>
+    <div class="toolbar-row secondary">
+    <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg> Visa alla</button>
+    <button class="btn btn-ghost" onclick="setAllCollapsed(true)" title="Minimera alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M6 8l6 6 6-6H6z"/></svg> Minimera alla</button>
+    </div>
+  </div>
   <div id="list"></div>
   <p class="hint"><svg class="ico" viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9zm3 4a2 2 0 0 1 1 3.7V18h-2v-1.3A2 2 0 0 1 12 13z"/></svg> Allt sparas endast på din enhet (localStorage). Ingen data skickas till någon server – andra användare ser aldrig dina ansökningar.</p>
 </div>
