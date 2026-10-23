@@ -155,6 +155,7 @@ textarea { resize:vertical; min-height:70px; }
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ghost" id="exportBtn" title="Spara alla ansökningar som en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> <span class="btn-txt">Exportera</span></button>
       <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 6h4v11h6V10h4l-7-7-7 7z"/></svg> <span class="btn-txt">Importera</span></button>
+      <button class="btn btn-ghost" id="exportCsvBtn" title="Spara alla ansökningar som en CSV-fil (Excel/Sheets)"><svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg> <span class="btn-txt">CSV</span></button>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
     </div>
   </header>
@@ -475,7 +476,22 @@ function importJSON(file){
   reader.readAsText(file);
 }
 
+function exportCSV(){
+  if (!apps.length){ toast('Inget att exportera ännu'); return; }
+  const fields = ['company','applyDate','deadline','website','status','answer','answerDate','city','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'];
+  const csvCell = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+  const rows = [fields.join(',')].concat(apps.map(a => fields.map(f => csvCell(a[f])).join(',')));
+  const blob = new Blob(['\uFEFF' + rows.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const el = document.createElement('a');
+  el.href = url;
+  el.download = 'lia-ansokningar-' + new Date().toISOString().slice(0,10) + '.csv';
+  el.click();
+  URL.revokeObjectURL(url);
+  toast('Exporterade ' + apps.length + ' ansökningar som CSV ✔');
+}
 $('exportBtn').onclick = exportJSON;
+$('exportCsvBtn').onclick = exportCSV;
 $('importBtn').onclick = () => $('importFile').click();
 $('importFile').addEventListener('change', e => {
   const f = e.target.files[0];
