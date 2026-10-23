@@ -256,6 +256,7 @@ const $ = id => document.getElementById(id);
 let apps = [];
 const COLLAPSE_KEY = 'lia-collapsed';
 const PERIOD_KEY = 'lia-period';
+const BACKUP_KEY = 'lia-last-backup';
 let collapsed = new Set();
 let filter = 'all';
 
@@ -269,6 +270,16 @@ function savePeriod(){ localStorage.setItem(PERIOD_KEY, $('period').value.trim()
 function toggleCard(id){ const el=$('card-'+id); if(!el) return; if(collapsed.has(id)) collapsed.delete(id); else collapsed.add(id); saveCollapsed(); el.classList.toggle('collapsed', collapsed.has(id)); }
 function setAllCollapsed(v){ apps.forEach(a => { if(v) collapsed.add(a.id); else collapsed.delete(a.id); }); saveCollapsed(); render(); }
 function save(){ localStorage.setItem(KEY, JSON.stringify(apps)); }
+function checkBackupReminder(){
+  if (!apps.length) return;
+  const last = localStorage.getItem(BACKUP_KEY);
+  const threshold = Date.now() - 14 * 86400000;
+  if (!last || Number(last) < threshold){
+    toast('Tips: exportera en s\u00e4kerhetskopia av dina ans\u00f6kningar');
+    localStorage.setItem(BACKUP_KEY, String(Date.now()));
+  }
+}
+function markBackupDone(){ localStorage.setItem(BACKUP_KEY, String(Date.now())); }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
@@ -447,6 +458,7 @@ function exportJSON(){
   a.click();
   URL.revokeObjectURL(url);
   toast('Exporterade ' + apps.length + ' ansökningar ✔');
+  markBackupDone();
 }
 
 function importJSON(file){
@@ -489,6 +501,7 @@ function exportCSV(){
   el.click();
   URL.revokeObjectURL(url);
   toast('Exporterade ' + apps.length + ' ansökningar som CSV ✔');
+  markBackupDone();
 }
 $('exportBtn').onclick = exportJSON;
 $('exportCsvBtn').onclick = exportCSV;
@@ -551,7 +564,7 @@ function bindChartEvents(){
 }
 bindChartEvents();
 
-load(); render();
+load(); render(); checkBackupReminder();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
