@@ -321,13 +321,13 @@ function render(){
   };
   const OUTCOME_CLS = {'Inte skickad':'o-notsent','V\u00e4ntar svar':'o-wait','Intervju':'o-interview','Ja':'o-yes','Nej':'o-no'};
   $('list').innerHTML = list.map(a=>{
-    const ans = a.answer==='pending' ? '<span class="badge b-pending">⏳ Väntar på svar</span>'
-      : a.answer==='yes' ? '<span class="badge b-yes">✅ Ja</span>' : '<span class="badge b-no">❌ Nej</span>';
+    const ans = a.answer==='pending' ? '<span class="badge b-pending">Väntar på svar</span>'
+      : a.answer==='yes' ? '<span class="badge b-yes">Ja</span>' : '<span class="badge b-no">Nej</span>';
     const siteShort = a.website ? esc(a.website.replace(/^https?:\/\//,'').replace(/\/$/,'')) : '';
     return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
         <div class="company">${esc(a.company)}${siteShort?` <a class="site-link" href="${esc(a.website)}" target="_blank" rel="noopener">${siteShort}</a>`:''}</div>
-        <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}</div>
+        <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'Konsultbolag':'Produktbolag'}</span>`:''}</div>
         <button class="toggle" aria-label="Visa/minimera detaljer">▾</button>
       </div>
       <div class="card-details">
@@ -338,7 +338,7 @@ function render(){
         <div><span class="lbl">Ort</span><span class="val">${esc(a.city)||'—'}</span></div>
         <div><span class="lbl">Kontakt</span><span class="val">${contactShort(a)}</span></div>
       </div>
-      ${a.notes?`<div class="notes">📝 ${esc(a.notes)}</div>`:''}
+      ${a.notes?`<div class="notes">${esc(a.notes)}</div>`:''}
       <div class="card-actions">
         <button class="btn btn-ghost" onclick="editApp('${a.id}')"><svg class="ico" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Redigera</button>
         <button class="btn btn-danger" onclick="delApp('${a.id}')"><svg class="ico" viewBox="0 0 24 24"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Ta bort</button>
