@@ -101,7 +101,7 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .company { font-size:1.25rem; font-weight:700; color:var(--m700); }
 .company a { color:inherit; text-decoration:none; border-bottom:2px solid var(--m300); }
 .company a:hover { color:var(--m600); }
-.badges { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.badges { display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 0; }
 .badge { font-size:.72rem; font-weight:700; padding:4px 10px; border-radius:999px; text-transform:uppercase; letter-spacing:.5px; }
 .b-pending { background:#f3f4f6; color:#4b5563; }
 .b-yes { background:#dcfce7; color:#15803d; }
@@ -109,11 +109,14 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .b-status { background:var(--m100); color:var(--m700); }
 .b-status-red { background:#fee2e2; color:#b91c1c; }
 .b-type { background:#f3f4f6; color:#4b5563; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px 18px; margin-top:10px; font-size:.92rem; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px 18px; margin-top:16px; font-size:.92rem; }
 .grid .lbl { color:var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.4px; display:block; }
 .grid .val { color:var(--text); }
-.notes { margin-top:10px; font-size:.9rem; color:var(--muted); background:var(--m50); border-radius:8px; padding:10px 12px; white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
-.card-actions { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.notes { margin-top:16px; font-size:.9rem; color:var(--muted); background:var(--m50); border-radius:8px; padding:10px 12px; white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; max-width:100%; }
+.card-actions { display:flex; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--m100); flex-wrap:wrap; align-items:center; }
+.icon-btn { background:var(--m50); border:none; cursor:pointer; padding:9px; border-radius:9px; color:var(--m700); display:inline-flex; align-items:center; transition:.15s; }
+.icon-btn:hover { background:var(--m100); color:var(--m600); }
+.actions-secondary { display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
 .empty { text-align:center; padding:60px 20px; color:var(--muted); }
 .empty .big { font-size:3rem; margin-bottom:10px; }
 dialog { border:none; border-radius:16px; padding:0; width:min(640px,94vw); box-shadow:0 20px 60px rgba(59,42,26,.25); }
@@ -338,12 +341,14 @@ function render(){
       </div>
       ${a.notes?`<div class="notes">📝 ${esc(a.notes)}</div>`:''}
       <div class="card-actions">
-        <button class="btn btn-ghost" onclick="editApp('${a.id}')">✏️ Redigera</button>
-        <button class="btn btn-ghost" title="Sök företaget på Google" onclick="webSearch('${a.id}','google')">🔎 Google</button>
-        <button class="btn btn-ghost" title="Sök företagets LinkedIn-sida" onclick="webSearch('${a.id}','linkedin')">👤 LinkedIn</button>
-        <button class="btn btn-ghost" title="Sök företagets adress och telefonnummer" onclick="webSearch('${a.id}','maps')">📍 Maps</button>
-        <button class="btn btn-ghost" onclick="dupApp('${a.id}')">⧉ Duplicera</button>
-        <button class="btn btn-danger" onclick="delApp('${a.id}')">🗑 Ta bort</button>
+        <button class="btn btn-ghost" onclick="editApp('${a.id}')"><svg class="ico" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Redigera</button>
+        <button class="btn btn-danger" onclick="delApp('${a.id}')"><svg class="ico" viewBox="0 0 24 24"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Ta bort</button>
+        <div class="actions-secondary">
+        <button class="icon-btn" title="Sök företaget på Google" onclick="webSearch('${a.id}','google')"><svg class="ico" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></button>
+        <button class="icon-btn" title="Sök företagets LinkedIn-sida" onclick="webSearch('${a.id}','linkedin')"><svg class="ico" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18.34V11.3H5.99v7.04h2.35zM7.16 9.91a1.35 1.35 0 1 0 0-2.7 1.35 1.35 0 0 0 0 2.7zM18.34 18.34v-4.03c0-2.2-1.17-3.22-2.74-3.22-1.26 0-1.83.7-2.14 1.18v-1.02H11.1c.03.67 0 7.09 0 7.09h2.36v-3.96c0-.21.02-.42.08-.57.17-.42.55-.86 1.2-.86.85 0 1.19.65 1.19 1.6v3.79h2.41z"/></svg></button>
+        <button class="icon-btn" title="Sök företagets adress och telefonnummer" onclick="webSearch('${a.id}','maps')"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg></button>
+        <button class="icon-btn" title="Duplicera ansökan" onclick="dupApp('${a.id}')"><svg class="ico" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg></button>
+        </div>
       </div>
       </div>
     </div>`;
