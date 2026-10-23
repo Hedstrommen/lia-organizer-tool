@@ -82,6 +82,8 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .chip:hover { border-color:var(--m400); color:var(--m700); }
 .chip .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
 .chip.active { background:var(--m600); border-color:var(--m600); color:#fff; }
+.chip-count { font-weight:700; font-size:.72rem; background:rgba(0,0,0,.07); border-radius:999px; padding:1px 7px; margin-left:2px; }
+.chip.active .chip-count { background:rgba(255,255,255,.25); }
 .card { background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:18px; margin-bottom:14px; border:1px solid var(--m100); border-left:5px solid var(--card-color,var(--m300)); transition:.15s; }
 .card.o-notsent { --card-color:#d97706; }
 .card.o-wait { --card-color:#d9a441; }
@@ -307,9 +309,12 @@ function render(){
   renderChart();
 
   const CHIP_DOTS = {'pending':'#d9a441','yes':'#15803d','no':'#b91c1c','Inte skickad':'#d97706','Skickad':'#2f7a1e','Intervju':'#1d4ed8','Klar':'#6b7280'};
+  const chipCount = v => v==='all' ? apps.length
+    : (v==='pending'||v==='yes'||v==='no') ? apps.filter(a=>a.answer===v).length
+    : apps.filter(a=>(a.status||'Skickad')===v).length;
   const chips = [['all','Alla'],['pending','Väntar'],['yes','Ja'],['no','Nej'],...STATUSES.map(s=>[s,s])];
   $('filters').innerHTML = chips.map(([v,l]) =>
-    `<button class="chip ${filter===v?'active':''}" data-f="${v}">${CHIP_DOTS[v]?`<span class="dot" style="background:${CHIP_DOTS[v]}"></span>`:''}${l}</button>`).join('');
+    `<button class="chip ${filter===v?'active':''}" data-f="${v}">${CHIP_DOTS[v]?`<span class="dot" style="background:${CHIP_DOTS[v]}"></span>`:''}${l}<span class="chip-count">${chipCount(v)}</span></button>`).join('');
 
   if (!list.length){
     $('list').innerHTML = `<div class="empty"><div class="big">🗂️</div><h3>${total ? 'Inga träffar' : 'Inga ansökningar än'}</h3><p>${total ? 'Prova att ändra sökning eller filter.' : 'Klicka på “＋ Ny ansökan” för att lägga till din första LIA-ansökan!'}</p></div>`;
