@@ -53,12 +53,13 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .stat { background:var(--card); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); border-left:4px solid var(--stat-color,var(--m600)); display:flex; flex-direction:column; gap:2px; min-width:0; }
 .stat .num { font-size:1.7rem; font-weight:800; color:var(--stat-color,var(--m700)); line-height:1.1; }
 .stat .lbl { font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.stat.total { --stat-color:#7b4b2a; }
-.stat.pending { --stat-color:#d9a441; }
-.stat.interview { --stat-color:#1d4ed8; }
+@media (max-width:900px){ .chart{display:none;} }
+.stat.total { --stat-color:var(--m700); }
+.stat.pending { --stat-color:#a16207; }
+.stat.interview { --stat-color:#4338ca; }
 .stat.yes { --stat-color:#15803d; }
 .stat.no { --stat-color:#b91c1c; }
-.stat.notsent { --stat-color:#d97706; }
+.stat.notsent { --stat-color:#b45309; }
 .chart { background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; margin-bottom:28px; }
 .chart-title { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
 .bar { display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--m50); position:relative; }
