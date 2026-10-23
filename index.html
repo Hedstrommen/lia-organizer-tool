@@ -115,6 +115,7 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .b-status { background:var(--m100); color:var(--m700); }
 .b-deadline { background:#fef3c7; color:#b45309; }
 .b-deadline-over { background:#fee2e2; color:#b91c1c; }
+.b-followup { background:#e0e7ff; color:#4338ca; }
 .b-status-red { background:#fee2e2; color:#b91c1c; }
 .b-type { background:#f3f4f6; color:#4b5563; }
 .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px 18px; margin-top:16px; font-size:.92rem; }
@@ -342,6 +343,13 @@ function render(){
     if (days <= 7) return `<span class="badge b-deadline">${days === 0 ? 'Deadline idag!' : days + ' dagar kvar'}</span>`;
     return '';
   };
+  const followUpBadge = a => {
+    if (a.answer !== 'pending' || outcome(a) !== 'V\u00e4ntar svar' || !a.applyDate) return '';
+    const sent = new Date(a.applyDate + 'T00:00:00');
+    const days = Math.round((Date.now() - sent) / 86400000);
+    if (days >= 21) return '<span class="badge b-followup">Dags att f\u00f6lja upp?</span>';
+    return '';
+  };
   $('list').innerHTML = list.map(a=>{
     const ans = a.answer==='pending' ? '<span class="badge b-pending">Väntar på svar</span>'
       : a.answer==='yes' ? '<span class="badge b-yes">Ja</span>' : '<span class="badge b-no">Nej</span>';
@@ -349,7 +357,7 @@ function render(){
     return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
         <div class="company">${esc(a.company)}${siteShort?` <a class="site-link" href="${esc(a.website)}" target="_blank" rel="noopener" title="${esc(a.website)}">${siteShort}</a>`:''}</div>
-        <div class="head-badges">${deadlineBadge(a)}<span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'Konsultbolag':'Produktbolag'}</span>`:''}</div>
+        <div class="head-badges">${deadlineBadge(a)}${followUpBadge(a)}<span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'Konsultbolag':'Produktbolag'}</span>`:''}</div>
         <button class="toggle" aria-label="Visa/minimera detaljer">▾</button>
       </div>
       <div class="card-details">
