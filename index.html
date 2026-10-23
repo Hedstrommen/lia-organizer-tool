@@ -53,12 +53,13 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .stat { background:var(--card); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); border-left:4px solid var(--stat-color,var(--m600)); display:flex; flex-direction:column; gap:2px; min-width:0; }
 .stat .num { font-size:1.7rem; font-weight:800; color:var(--stat-color,var(--m700)); line-height:1.1; }
 .stat .lbl { font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.stat.total { --stat-color:#7b4b2a; }
-.stat.pending { --stat-color:#d9a441; }
-.stat.interview { --stat-color:#1d4ed8; }
+@media (max-width:900px){ .chart{display:none;} }
+.stat.total { --stat-color:var(--m700); }
+.stat.pending { --stat-color:#a16207; }
+.stat.interview { --stat-color:#4338ca; }
 .stat.yes { --stat-color:#15803d; }
 .stat.no { --stat-color:#b91c1c; }
-.stat.notsent { --stat-color:#d97706; }
+.stat.notsent { --stat-color:#b45309; }
 .chart { background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; margin-bottom:28px; }
 .chart-title { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:8px; }
 .bar { display:flex; height:28px; border-radius:8px; overflow:hidden; background:var(--m50); position:relative; }
@@ -78,7 +79,14 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .legend-dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
 @media (max-width:560px){ .stats{gap:6px;} .stat{padding:10px 8px; border-left-width:4px;} .stat .num{font-size:1.35rem;} .stat .lbl{font-size:.54rem; letter-spacing:.3px;} }
 .filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; margin-top:16px; }
+@media (max-width:560px){
+  .filters { flex-wrap:nowrap; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+  .filters .chip { flex:0 0 auto; }
+}
 .list-header { display:flex; align-items:center; flex-wrap:wrap; gap:10px 14px; margin-bottom:16px; }
+.filter-status { font-size:.85rem; color:var(--muted); margin-bottom:10px; display:none; }
+.filter-status.show { display:block; }
+.filter-status button { background:none; border:none; color:var(--m600); font-weight:700; cursor:pointer; font-size:.85rem; text-decoration:underline; padding:0; }
 .list-title { font-size:1.35rem; font-weight:800; color:var(--m700); margin-right:2px; }
 .list-header .toolbar-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 .chip { padding:6px 14px; border-radius:999px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:.85rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:.15s; }
@@ -113,6 +121,9 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .b-yes { background:#dcfce7; color:#15803d; }
 .b-no { background:#fee2e2; color:#b91c1c; }
 .b-status { background:var(--m100); color:var(--m700); }
+.b-deadline { background:#fef3c7; color:#b45309; }
+.b-deadline-over { background:#fee2e2; color:#b91c1c; }
+.b-followup { background:#e0e7ff; color:#4338ca; }
 .b-status-red { background:#fee2e2; color:#b91c1c; }
 .b-type { background:#f3f4f6; color:#4b5563; }
 .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px 18px; margin-top:16px; font-size:.92rem; }
@@ -124,7 +135,10 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .icon-btn:hover { background:var(--m100); color:var(--m600); }
 .actions-secondary { display:flex; gap:6px; margin-left:auto; flex-wrap:wrap; }
 .empty { text-align:center; padding:60px 20px; color:var(--muted); }
-.empty .big { font-size:3rem; margin-bottom:10px; }
+.empty h3 { color:var(--m700); font-size:1.2rem; margin-bottom:6px; }
+.empty p { margin-bottom:18px; }
+.empty-ico { width:48px; height:48px; fill:var(--m300); margin-bottom:14px; }
+.empty-link { background:none; border:none; color:var(--m600); font-weight:700; text-decoration:underline; cursor:pointer; font-size:inherit; padding:0; }
 dialog { border:none; border-radius:16px; padding:0; width:min(640px,94vw); box-shadow:0 20px 60px rgba(59,42,26,.25); }
 dialog::backdrop { background:rgba(59,42,26,.35); backdrop-filter:blur(2px); }
 .modal-content { background:linear-gradient(180deg,#fff,#eef5ea); border-radius:16px; padding:24px; max-height:88vh; overflow:auto; }
@@ -137,6 +151,8 @@ input:focus, textarea:focus { border-color:var(--m500); box-shadow:0 0 0 3px rgb
 textarea { resize:vertical; min-height:70px; }
 .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
 .hint { font-size:.8rem; color:var(--muted); margin-top:14px; text-align:center; }
+.import-mode { display:flex; align-items:center; gap:6px; font-size:.78rem; font-weight:600; color:var(--muted); text-transform:none; letter-spacing:0; cursor:pointer; margin-left:8px; }
+.import-mode input { width:auto; padding:0; accent-color:var(--m600); }
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#7b4b2a; color:#fff; padding:12px 22px; border-radius:999px; font-size:.9rem; opacity:0; transition:.3s; z-index:99; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 @media (max-width:560px){ .form-grid{grid-template-columns:1fr;} h1{font-size:1.5rem;} .btn .btn-txt{display:none;} header .btn{padding:10px 12px;} }
@@ -152,7 +168,9 @@ textarea { resize:vertical; min-height:70px; }
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ghost" id="exportBtn" title="Spara alla ansökningar som en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> <span class="btn-txt">Exportera</span></button>
       <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 6h4v11h6V10h4l-7-7-7 7z"/></svg> <span class="btn-txt">Importera</span></button>
+      <button class="btn btn-ghost" id="exportCsvBtn" title="Spara alla ansökningar som en CSV-fil (Excel/Sheets)"><svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg> <span class="btn-txt">CSV</span></button>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
+  <label class="import-mode"><input type="checkbox" id="importReplace"> Ersätt befintliga vid import (avmarkerat = lägg till)</label>
     </div>
   </header>
 
@@ -186,6 +204,7 @@ textarea { resize:vertical; min-height:70px; }
   </div>
 
   <div class="filters" id="filters"></div>
+  <div class="filter-status" id="filterStatus"></div>
   <div class="list-header"><span class="list-title">Ansökningar</span>
     <button class="btn btn-primary" id="addBtn"><svg class="ico" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> <span class="btn-txt">Ny ansökan</span></button>
     <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg> Visa alla</button>
@@ -252,6 +271,8 @@ const $ = id => document.getElementById(id);
 let apps = [];
 const COLLAPSE_KEY = 'lia-collapsed';
 const PERIOD_KEY = 'lia-period';
+const BACKUP_KEY = 'lia-last-backup';
+const VIEW_KEY = 'lia-view';
 let collapsed = new Set();
 let filter = 'all';
 
@@ -262,9 +283,26 @@ function load(){ try{ apps = JSON.parse(localStorage.getItem(KEY)) || []; } catc
 function saveCollapsed(){ localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsed])); }
 function loadPeriod(){ $('period').value = localStorage.getItem(PERIOD_KEY) || ''; }
 function savePeriod(){ localStorage.setItem(PERIOD_KEY, $('period').value.trim()); }
+function saveView(){ localStorage.setItem(VIEW_KEY, JSON.stringify({ q:$('search').value, sort:$('sort').value, filter })); }
+function loadView(){
+  let v; try{ v = JSON.parse(localStorage.getItem(VIEW_KEY)) || {}; } catch{ v = {}; }
+  if (v.q) $('search').value = v.q;
+  if (v.sort) $('sort').value = v.sort;
+  if (v.filter) filter = v.filter;
+}
 function toggleCard(id){ const el=$('card-'+id); if(!el) return; if(collapsed.has(id)) collapsed.delete(id); else collapsed.add(id); saveCollapsed(); el.classList.toggle('collapsed', collapsed.has(id)); }
 function setAllCollapsed(v){ apps.forEach(a => { if(v) collapsed.add(a.id); else collapsed.delete(a.id); }); saveCollapsed(); render(); }
 function save(){ localStorage.setItem(KEY, JSON.stringify(apps)); }
+function checkBackupReminder(){
+  if (!apps.length) return;
+  const last = localStorage.getItem(BACKUP_KEY);
+  const threshold = Date.now() - 14 * 86400000;
+  if (!last || Number(last) < threshold){
+    toast('Tips: exportera en s\u00e4kerhetskopia av dina ans\u00f6kningar');
+    localStorage.setItem(BACKUP_KEY, String(Date.now()));
+  }
+}
+function markBackupDone(){ localStorage.setItem(BACKUP_KEY, String(Date.now())); }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
@@ -319,8 +357,21 @@ function render(){
   $('filters').innerHTML = chips.map(([v,l]) =>
     `<button class="chip ${filter===v?'active':''}" data-f="${v}">${CHIP_DOTS[v]?`<span class="dot" style="background:${CHIP_DOTS[v]}"></span>`:''}${l}<span class="chip-count">${chipCount(v)}</span></button>`).join('');
 
+  const fs = $('filterStatus');
+  if (filter !== 'all' || q){
+    const label = filter === 'all' ? 'Alla' : (filter === 'pending' ? 'V\u00e4ntar' : filter === 'yes' ? 'Ja' : filter === 'no' ? 'Nej' : filter);
+    const parts = [];
+    if (filter !== 'all') parts.push(`Filtrerar p\u00e5: ${label}`);
+    if (q) parts.push(`S\u00f6kning: "${esc(q)}"`);
+    fs.innerHTML = `${parts.join(' + ')} \u2013 visar ${list.length} av ${total} <button onclick="clearFilters()">Rensa</button>`;
+    fs.classList.add('show');
+  } else {
+    fs.classList.remove('show');
+  }
   if (!list.length){
-    $('list').innerHTML = `<div class="empty"><div class="big">🗂️</div><h3>${total ? 'Inga träffar' : 'Inga ansökningar än'}</h3><p>${total ? 'Prova att ändra sökning eller filter.' : 'Klicka på “＋ Ny ansökan” för att lägga till din första LIA-ansökan!'}</p></div>`;
+    $('list').innerHTML = total
+      ? `<div class="empty"><h3>Inga träffar</h3><p>Prova att ändra sökning eller filter – eller <button class="empty-link" onclick="clearFilters()">rensa filtret</button>.</p></div>`
+      : `<div class="empty"><svg class="empty-ico" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg><h3>Inga ansökningar än</h3><p>Spåra ditt LIA-sökande här – status, kontakter och deadlines på ett ställe.</p><button class="btn btn-primary" onclick="openModal()"><svg class="ico" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Skapa din första ansökan</button></div>`;
     return;
   }
   const contactShort = a => {
@@ -331,6 +382,22 @@ function render(){
     return parts.join('<br>') || '—';
   };
   const OUTCOME_CLS = {'Inte skickad':'o-notsent','V\u00e4ntar svar':'o-wait','Intervju':'o-interview','Ja':'o-yes','Nej':'o-no'};
+  const deadlineBadge = a => {
+    if (!a.deadline || outcome(a) !== 'Inte skickad') return '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const d = new Date(a.deadline + 'T00:00:00');
+    const days = Math.round((d - today) / 86400000);
+    if (days < 0) return '<span class="badge b-deadline-over">Passerad deadline</span>';
+    if (days <= 7) return `<span class="badge b-deadline">${days === 0 ? 'Deadline idag!' : days + ' dagar kvar'}</span>`;
+    return '';
+  };
+  const followUpBadge = a => {
+    if (a.answer !== 'pending' || outcome(a) !== 'V\u00e4ntar svar' || !a.applyDate) return '';
+    const sent = new Date(a.applyDate + 'T00:00:00');
+    const days = Math.round((Date.now() - sent) / 86400000);
+    if (days >= 21) return '<span class="badge b-followup">Dags att f\u00f6lja upp?</span>';
+    return '';
+  };
   $('list').innerHTML = list.map(a=>{
     const ans = a.answer==='pending' ? '<span class="badge b-pending">Väntar på svar</span>'
       : a.answer==='yes' ? '<span class="badge b-yes">Ja</span>' : '<span class="badge b-no">Nej</span>';
@@ -338,7 +405,7 @@ function render(){
     return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
         <div class="company">${esc(a.company)}${siteShort?` <a class="site-link" href="${esc(a.website)}" target="_blank" rel="noopener" title="${esc(a.website)}">${siteShort}</a>`:''}</div>
-        <div class="head-badges"><span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'Konsultbolag':'Produktbolag'}</span>`:''}</div>
+        <div class="head-badges">${deadlineBadge(a)}${followUpBadge(a)}<span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'Konsultbolag':'Produktbolag'}</span>`:''}</div>
         <button class="toggle" aria-label="Visa/minimera detaljer">▾</button>
       </div>
       <div class="card-details">
@@ -392,9 +459,17 @@ function dupApp(id){
   apps.unshift({...a, id:uid(), company:a.company+' (kopia)', updated:new Date().toISOString()});
   save(); render(); toast('Ansökan duplicerad');
 }
+const pendingDelete = new Set();
 function delApp(id){
   const a = apps.find(x=>x.id===id); if(!a) return;
-  if (!confirm(`Ta bort ansökan till "${a.company}"?`)) return;
+  const btn = document.querySelector(`#card-${id} .btn-danger`);
+  if (!pendingDelete.has(id)){
+    pendingDelete.add(id);
+    if (btn){ btn.classList.add('confirm'); btn.lastChild.textContent = ' Säker?'; }
+    setTimeout(() => { pendingDelete.delete(id); if (btn){ btn.classList.remove('confirm'); btn.lastChild.textContent = ' Ta bort'; } }, 3000);
+    return;
+  }
+  pendingDelete.delete(id);
   apps = apps.filter(x=>x.id!==id);
   save(); render(); toast('Ansökan borttagen');
 }
@@ -427,6 +502,7 @@ function exportJSON(){
   a.click();
   URL.revokeObjectURL(url);
   toast('Exporterade ' + apps.length + ' ansökningar ✔');
+  markBackupDone();
 }
 
 function importJSON(file){
@@ -438,10 +514,7 @@ function importJSON(file){
     if (!Array.isArray(incoming)){ toast('Filen innehåller inga ansökningar'); return; }
     const valid = incoming.filter(a => a && a.company).map(a => ({...a, id:a.id||uid()}));
     if (!valid.length){ toast('Filen innehåller inga giltiga ansökningar'); return; }
-    const replace = apps.length ? confirm(
-      'OK = ersätt alla befintliga ansökningar med filens ' + valid.length + ' ansökningar.\n' +
-      'Avbryt = lägg till filens ansökningar bland dina befintliga (' + apps.length + ').'
-    ) : true;
+    const replace = apps.length ? $('importReplace').checked : true;
     if (replace) apps = valid;
     else {
       const existing = new Set(apps.map(a=>a.id));
@@ -456,7 +529,23 @@ function importJSON(file){
   reader.readAsText(file);
 }
 
+function exportCSV(){
+  if (!apps.length){ toast('Inget att exportera ännu'); return; }
+  const fields = ['company','applyDate','deadline','website','status','answer','answerDate','city','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'];
+  const csvCell = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+  const rows = [fields.join(',')].concat(apps.map(a => fields.map(f => csvCell(a[f])).join(',')));
+  const blob = new Blob(['\uFEFF' + rows.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const el = document.createElement('a');
+  el.href = url;
+  el.download = 'lia-ansokningar-' + new Date().toISOString().slice(0,10) + '.csv';
+  el.click();
+  URL.revokeObjectURL(url);
+  toast('Exporterade ' + apps.length + ' ansökningar som CSV ✔');
+  markBackupDone();
+}
 $('exportBtn').onclick = exportJSON;
+$('exportCsvBtn').onclick = exportCSV;
 $('importBtn').onclick = () => $('importFile').click();
 $('importFile').addEventListener('change', e => {
   const f = e.target.files[0];
@@ -465,15 +554,16 @@ $('importFile').addEventListener('change', e => {
 });
 $('cancelBtn').onclick = () => $('modal').close();
 $('modal').addEventListener('close', () => $('form').reset());
-$('search').addEventListener('input', render);
-$('sort').addEventListener('change', render);
+$('search').addEventListener('input', () => { saveView(); render(); });
+$('sort').addEventListener('change', () => { saveView(); render(); });
 $('filters').addEventListener('click', e => {
   const b = e.target.closest('.chip'); if(!b) return;
-  filter = b.dataset.f; render();
+  filter = b.dataset.f; saveView(); render();
 });
 
+function clearFilters(){ filter = 'all'; $('search').value = ''; saveView(); render(); }
 $('period').addEventListener('input', savePeriod);
-loadPeriod();
+loadPeriod(); loadView();
 function outcome(a){
   if ((a.status||'Skickad')==='Inte skickad') return 'Inte skickad';
   if (a.answer==='no') return 'Nej';
@@ -516,7 +606,7 @@ function bindChartEvents(){
 }
 bindChartEvents();
 
-load(); render();
+load(); render(); checkBackupReminder();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
