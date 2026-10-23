@@ -140,6 +140,8 @@ input:focus, textarea:focus { border-color:var(--m500); box-shadow:0 0 0 3px rgb
 textarea { resize:vertical; min-height:70px; }
 .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
 .hint { font-size:.8rem; color:var(--muted); margin-top:14px; text-align:center; }
+.import-mode { display:flex; align-items:center; gap:6px; font-size:.78rem; font-weight:600; color:var(--muted); text-transform:none; letter-spacing:0; cursor:pointer; margin-left:8px; }
+.import-mode input { width:auto; padding:0; accent-color:var(--m600); }
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#7b4b2a; color:#fff; padding:12px 22px; border-radius:999px; font-size:.9rem; opacity:0; transition:.3s; z-index:99; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 @media (max-width:560px){ .form-grid{grid-template-columns:1fr;} h1{font-size:1.5rem;} .btn .btn-txt{display:none;} header .btn{padding:10px 12px;} }
@@ -157,6 +159,7 @@ textarea { resize:vertical; min-height:70px; }
       <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 6h4v11h6V10h4l-7-7-7 7z"/></svg> <span class="btn-txt">Importera</span></button>
       <button class="btn btn-ghost" id="exportCsvBtn" title="Spara alla ansökningar som en CSV-fil (Excel/Sheets)"><svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg> <span class="btn-txt">CSV</span></button>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
+  <label class="import-mode"><input type="checkbox" id="importReplace"> Ersätt befintliga vid import (avmarkerat = lägg till)</label>
     </div>
   </header>
 
@@ -486,10 +489,7 @@ function importJSON(file){
     if (!Array.isArray(incoming)){ toast('Filen innehåller inga ansökningar'); return; }
     const valid = incoming.filter(a => a && a.company).map(a => ({...a, id:a.id||uid()}));
     if (!valid.length){ toast('Filen innehåller inga giltiga ansökningar'); return; }
-    const replace = apps.length ? confirm(
-      'OK = ersätt alla befintliga ansökningar med filens ' + valid.length + ' ansökningar.\n' +
-      'Avbryt = lägg till filens ansökningar bland dina befintliga (' + apps.length + ').'
-    ) : true;
+    const replace = apps.length ? $('importReplace').checked : true;
     if (replace) apps = valid;
     else {
       const existing = new Set(apps.map(a=>a.id));
