@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'lia-organizer-v1';
+const CACHE = 'lia-organizer-v2';
 const ASSETS = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png'];
 
 self.addEventListener('install', e => {
@@ -13,12 +13,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+    fetch(e.request).then(res => {
       if (res.ok && new URL(e.request.url).origin === location.origin) {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, copy));
       }
       return res;
-    }).catch(() => cached))
+    }).catch(() => caches.match(e.request).then(cached => cached || caches.match('./')))
   );
 });
