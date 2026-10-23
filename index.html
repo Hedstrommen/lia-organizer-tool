@@ -431,9 +431,17 @@ function dupApp(id){
   apps.unshift({...a, id:uid(), company:a.company+' (kopia)', updated:new Date().toISOString()});
   save(); render(); toast('Ansökan duplicerad');
 }
+const pendingDelete = new Set();
 function delApp(id){
   const a = apps.find(x=>x.id===id); if(!a) return;
-  if (!confirm(`Ta bort ansökan till "${a.company}"?`)) return;
+  const btn = document.querySelector(`#card-${id} .btn-danger`);
+  if (!pendingDelete.has(id)){
+    pendingDelete.add(id);
+    if (btn){ btn.classList.add('confirm'); btn.lastChild.textContent = ' Säker?'; }
+    setTimeout(() => { pendingDelete.delete(id); if (btn){ btn.classList.remove('confirm'); btn.lastChild.textContent = ' Ta bort'; } }, 3000);
+    return;
+  }
+  pendingDelete.delete(id);
   apps = apps.filter(x=>x.id!==id);
   save(); render(); toast('Ansökan borttagen');
 }
