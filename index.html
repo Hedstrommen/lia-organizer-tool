@@ -79,6 +79,9 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 @media (max-width:560px){ .stats{gap:6px;} .stat{padding:10px 8px; border-left-width:4px;} .stat .num{font-size:1.35rem;} .stat .lbl{font-size:.54rem; letter-spacing:.3px;} }
 .filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; margin-top:16px; }
 .list-header { display:flex; align-items:center; flex-wrap:wrap; gap:10px 14px; margin-bottom:16px; }
+.filter-status { font-size:.85rem; color:var(--muted); margin-bottom:10px; display:none; }
+.filter-status.show { display:block; }
+.filter-status button { background:none; border:none; color:var(--m600); font-weight:700; cursor:pointer; font-size:.85rem; text-decoration:underline; padding:0; }
 .list-title { font-size:1.35rem; font-weight:800; color:var(--m700); margin-right:2px; }
 .list-header .toolbar-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 .chip { padding:6px 14px; border-radius:999px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:.85rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:.15s; }
@@ -193,6 +196,7 @@ textarea { resize:vertical; min-height:70px; }
   </div>
 
   <div class="filters" id="filters"></div>
+  <div class="filter-status" id="filterStatus"></div>
   <div class="list-header"><span class="list-title">Ansökningar</span>
     <button class="btn btn-primary" id="addBtn"><svg class="ico" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> <span class="btn-txt">Ny ansökan</span></button>
     <button class="btn btn-ghost" onclick="setAllCollapsed(false)" title="Visa alla detaljer"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16l-6-6h12l-6 6z"/></svg> Visa alla</button>
@@ -345,6 +349,17 @@ function render(){
   $('filters').innerHTML = chips.map(([v,l]) =>
     `<button class="chip ${filter===v?'active':''}" data-f="${v}">${CHIP_DOTS[v]?`<span class="dot" style="background:${CHIP_DOTS[v]}"></span>`:''}${l}<span class="chip-count">${chipCount(v)}</span></button>`).join('');
 
+  const fs = $('filterStatus');
+  if (filter !== 'all' || q){
+    const label = filter === 'all' ? 'Alla' : (filter === 'pending' ? 'V\u00e4ntar' : filter === 'yes' ? 'Ja' : filter === 'no' ? 'Nej' : filter);
+    const parts = [];
+    if (filter !== 'all') parts.push(`Filtrerar p\u00e5: ${label}`);
+    if (q) parts.push(`S\u00f6kning: "${esc(q)}"`);
+    fs.innerHTML = `${parts.join(' + ')} \u2013 visar ${list.length} av ${total} <button onclick="clearFilters()">Rensa</button>`;
+    fs.classList.add('show');
+  } else {
+    fs.classList.remove('show');
+  }
   if (!list.length){
     $('list').innerHTML = `<div class="empty"><div class="big">🗂️</div><h3>${total ? 'Inga träffar' : 'Inga ansökningar än'}</h3><p>${total ? 'Prova att ändra sökning eller filter.' : 'Klicka på “＋ Ny ansökan” för att lägga till din första LIA-ansökan!'}</p></div>`;
     return;
@@ -536,6 +551,7 @@ $('filters').addEventListener('click', e => {
   filter = b.dataset.f; saveView(); render();
 });
 
+function clearFilters(){ filter = 'all'; $('search').value = ''; saveView(); render(); }
 $('period').addEventListener('input', savePeriod);
 loadPeriod(); loadView();
 function outcome(a){
