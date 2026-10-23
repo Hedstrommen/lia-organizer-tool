@@ -87,7 +87,6 @@ select.sort { padding:11px 14px; border:2px solid var(--border); border-radius:1
 .card.o-yes { --card-color:#15803d; }
 .card.o-no { --card-color:#b91c1c; }
 .card:hover { box-shadow:0 6px 20px rgba(93,64,36,.16); }
-.card-top { display:flex; flex-direction:column; gap:4px; }
 .card-head { display:flex; align-items:center; gap:12px; cursor:pointer; flex-wrap:wrap; }
 .card-head .company { flex:1 1 auto; min-width:120px; }
 .site-link { font-size:.8rem; font-weight:400; color:var(--m600); text-decoration:none; margin-left:6px; border-bottom:1px solid var(--m300); }
@@ -316,8 +315,8 @@ function render(){
   const contactShort = a => {
     const parts = [];
     if (a.contactName) parts.push(esc(a.contactName) + (a.contactTitle ? ` <small>(${esc(a.contactTitle)})</small>` : ''));
-    if (a.contactEmail) parts.push(`✉️ <a href="mailto:${esc(a.contactEmail)}">${esc(a.contactEmail)}</a>`);
-    if (a.contactPhone) parts.push('📞 ' + esc(a.contactPhone));
+    if (a.contactEmail) parts.push(`<a href="mailto:${esc(a.contactEmail)}">${esc(a.contactEmail)}</a>`);
+    if (a.contactPhone) parts.push(esc(a.contactPhone));
     return parts.join('<br>') || '—';
   };
   const OUTCOME_CLS = {'Inte skickad':'o-notsent','V\u00e4ntar svar':'o-wait','Intervju':'o-interview','Ja':'o-yes','Nej':'o-no'};
@@ -334,9 +333,9 @@ function render(){
       <div class="card-details">
       <div class="badges">${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}${ans}${a.answerDate?`<span class="badge b-pending">Svar: ${esc(a.answerDate)}</span>`:''}</div>
       <div class="grid">
-        <div><span class="lbl">Ansökningsdatum</span><span class="val">📅 ${esc(a.applyDate)||'—'}</span></div>
-        <div><span class="lbl">Sista ansökningsdag</span><span class="val">⏰ ${esc(a.deadline)||'—'}</span></div>
-        <div><span class="lbl">Ort</span><span class="val">📍 ${esc(a.city)||'—'}</span></div>
+        <div><span class="lbl">Ansökningsdatum</span><span class="val">${esc(a.applyDate)||'—'}</span></div>
+        <div><span class="lbl">Sista ansökningsdag</span><span class="val">${esc(a.deadline)||'—'}</span></div>
+        <div><span class="lbl">Ort</span><span class="val">${esc(a.city)||'—'}</span></div>
         <div><span class="lbl">Kontakt</span><span class="val">${contactShort(a)}</span></div>
       </div>
       ${a.notes?`<div class="notes">📝 ${esc(a.notes)}</div>`:''}
