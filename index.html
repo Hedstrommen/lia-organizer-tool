@@ -148,6 +148,7 @@ dialog::backdrop { background:rgba(59,42,26,.35); backdrop-filter:blur(2px); }
 label { display:block; font-size:.78rem; font-weight:700; color:var(--m700); text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
 input, textarea { width:100%; padding:10px 12px; border:2px solid var(--border); border-radius:9px; font-size:.95rem; font-family:inherit; color:var(--text); background:#fff; outline:none; }
 input:focus, textarea:focus { border-color:var(--m500); box-shadow:0 0 0 3px rgba(63,143,43,.15); }
+select:disabled, input:disabled { opacity:.55; cursor:not-allowed; background:#f3f4f6; }
 textarea { resize:vertical; min-height:70px; }
 .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
 .hint { font-size:.8rem; color:var(--muted); margin-top:14px; text-align:center; }
@@ -246,6 +247,7 @@ textarea { resize:vertical; min-height:70px; }
             <option value="">– Välj –</option>
             <option value="consult">Konsultbolag</option>
             <option value="product">Produktbolag</option>
+            <option value="public">Offentlig</option>
           </select>
         </div>
         <div class="full"><label>Kontakt på företaget</label></div>
@@ -309,7 +311,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('sho
 
 function matches(a, q){
   q = q.toLowerCase();
-  return [a.company,a.city,a.businessType,a.notes,a.status,a.contactName,a.contactTitle,a.contactEmail,a.contactPhone]
+  return [a.company,a.city,typeLabel(a.businessType),a.notes,a.status,a.contactName,a.contactTitle,a.contactEmail,a.contactPhone]
     .some(v => String(v||'').toLowerCase().includes(q));
 }
 
@@ -405,11 +407,11 @@ function render(){
     return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
         <div class="company">${esc(a.company)}${siteShort?` <a class="site-link" href="${esc(a.website)}" target="_blank" rel="noopener" title="${esc(a.website)}">${siteShort}</a>`:''}</div>
-        <div class="head-badges">${deadlineBadge(a)}${followUpBadge(a)}<span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'Konsultbolag':'Produktbolag'}</span>`:''}</div>
+        <div class="head-badges">${deadlineBadge(a)}${followUpBadge(a)}<span class="badge b-status ${a.status==='Inte skickad'?'b-status-red':''}">${esc(a.status||'Skickad')}</span>${a.businessType?`<span class="badge b-type">${typeLabel(a.businessType)}</span>`:''}</div>
         <button class="toggle" aria-label="Visa/minimera detaljer">▾</button>
       </div>
       <div class="card-details">
-      <div class="badges">${a.businessType?`<span class="badge b-type">${a.businessType==='consult'?'🤝 Konsultbolag':'📦 Produktbolag'}</span>`:''}${ans}${a.answerDate?`<span class="badge b-pending">Svar: ${esc(a.answerDate)}</span>`:''}</div>
+      <div class="badges">${a.businessType?`<span class="badge b-type">${typeLabel(a.businessType,true)}</span>`:''}${ans}${a.answerDate?`<span class="badge b-pending">Svar: ${esc(a.answerDate)}</span>`:''}</div>
       <div class="grid">
         <div><span class="lbl">Ansökningsdatum</span><span class="val">${esc(a.applyDate)||'—'}</span></div>
         <div><span class="lbl">Sista ansökningsdag</span><span class="val">${esc(a.deadline)||'—'}</span></div>
@@ -439,6 +441,7 @@ function openModal(id){
   for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
     $(f).value = a ? (a[f] ?? '') : '';
   if (!a) { $('answer').value = 'pending'; $('status').value = 'Inte skickad'; }
+  syncAnswerLock();
   $('modal').showModal();
 }
 function editApp(id){ openModal(id); }
@@ -474,6 +477,14 @@ function delApp(id){
   save(); render(); toast('Ansökan borttagen');
 }
 
+function syncAnswerLock(){
+  const locked = $('status').value === 'Inte skickad';
+  $('answer').disabled = locked;
+  $('answerDate').disabled = locked;
+  if (locked){ $('answer').value = 'pending'; $('answerDate').value = ''; }
+}
+$('status').addEventListener('change', syncAnswerLock);
+
 $('form').addEventListener('submit', e => {
   e.preventDefault();
   const id = $('id').value;
@@ -482,7 +493,8 @@ $('form').addEventListener('submit', e => {
   };
   for (const f of ['company','applyDate','deadline','website','status','answer','answerDate','city','businessType','contactName','contactTitle','contactEmail','contactPhone','notes'])
     data[f] = $(f).value.trim();
-  if (data.answer === 'pending') data.answerDate = '';
+  if (data.status === 'Inte skickad'){ data.answer = 'pending'; data.answerDate = ''; }
+  else if (data.answer === 'pending') data.answerDate = '';
   const i = apps.findIndex(x=>x.id===data.id);
   if (i >= 0) apps[i] = data; else apps.unshift(data);
   save(); $('modal').close(); render();
@@ -564,6 +576,12 @@ $('filters').addEventListener('click', e => {
 function clearFilters(){ filter = 'all'; $('search').value = ''; saveView(); render(); }
 $('period').addEventListener('input', savePeriod);
 loadPeriod(); loadView();
+function typeLabel(t, withIcon){
+  const map = {consult:['Konsultbolag','🤝'], product:['Produktbolag','📦'], public:['Offentlig','🏛️']};
+  const m = map[t];
+  if (!m) return t || '';
+  return withIcon ? m[1] + ' ' + m[0] : m[0];
+}
 function outcome(a){
   if ((a.status||'Skickad')==='Inte skickad') return 'Inte skickad';
   if (a.answer==='no') return 'Nej';
