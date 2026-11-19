@@ -25,7 +25,7 @@ Ett enkelt verktyg för att hålla ordning på dina LIA-ansökningar.
 - ↕️ **Sortering**: datum (nyast/äldst), företagsnamn A–Ö, eller senast ändrad
 - 🏷️ **Filterchips** per status och svar
 - 📊 **Statistikpanel**: antal ansökningar, väntande svar, intervjuer, ja och nej
-- ⬇/⬆ **Export & import**: spara alla ansökningar som en JSON-fil (backup) och läs in dem igen – välj att ersätta eller lägga till bland befintliga
+- ⬇/⬆ **Export & import**: spara alla ansökningar som JSON eller CSV och läs in igen – även Excel-filer (.xlsx/.xls) kan laddas upp – välj att ersätta eller lägga till bland befintliga
 - ⧉ **Duplicera** och ✏️ **redigera** befintliga ansökningar
 
 ## Sekretess och sparande av data

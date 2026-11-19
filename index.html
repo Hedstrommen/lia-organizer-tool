@@ -169,8 +169,10 @@ textarea { resize:vertical; min-height:70px; }
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ghost" id="exportBtn" title="Spara alla ansökningar som en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg> <span class="btn-txt">Exportera</span></button>
       <button class="btn btn-ghost" id="importBtn" title="Läs in ansökningar från en JSON-fil"><svg class="ico" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 6h4v11h6V10h4l-7-7-7 7z"/></svg> <span class="btn-txt">Importera</span></button>
+      <button class="btn btn-ghost" id="importExcelBtn" title="Läs in ansökningar från en Excel-fil (.xlsx/.xls)"><svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h3v2H8v-2zm0 4h3v2H8v-2zm5-4h3v2h-3v-2zm0 4h3v2h-3v-2z"/></svg> <span class="btn-txt">Excel</span></button>
       <button class="btn btn-ghost" id="exportCsvBtn" title="Spara alla ansökningar som en CSV-fil (Excel/Sheets)"><svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg> <span class="btn-txt">CSV</span></button>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
+      <input type="file" id="importExcelFile" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden>
   <label class="import-mode"><input type="checkbox" id="importReplace"> Ersätt befintliga vid import (avmarkerat = lägg till)</label>
     </div>
   </header>
@@ -315,9 +317,10 @@ function matches(a, q){
     .some(v => String(v||'').toLowerCase().includes(q));
 }
 
+function answerOf(a){ return (a.status||'Skickad')==='Inte skickad' ? null : (a.answer||'pending'); }
 function passFilter(a){
   if (filter === 'all') return true;
-  if (filter === 'yes' || filter === 'no' || filter === 'pending') return a.answer === filter;
+  if (filter === 'yes' || filter === 'no' || filter === 'pending') return answerOf(a) === filter;
   return a.status === filter;
 }
 
@@ -353,7 +356,7 @@ function render(){
 
   const CHIP_DOTS = {'pending':'#d9a441','yes':'#15803d','no':'#b91c1c','Inte skickad':'#d97706','Skickad':'#2f7a1e','Intervju':'#1d4ed8','Klar':'#6b7280'};
   const chipCount = v => v==='all' ? apps.length
-    : (v==='pending'||v==='yes'||v==='no') ? apps.filter(a=>a.answer===v).length
+    : (v==='pending'||v==='yes'||v==='no') ? apps.filter(a=>answerOf(a)===v).length
     : apps.filter(a=>(a.status||'Skickad')===v).length;
   const chips = [['all','Alla'],['pending','Väntar'],['yes','Ja'],['no','Nej'],...STATUSES.map(s=>[s,s])];
   $('filters').innerHTML = chips.map(([v,l]) =>
@@ -401,8 +404,9 @@ function render(){
     return '';
   };
   $('list').innerHTML = list.map(a=>{
-    const ans = a.answer==='pending' ? '<span class="badge b-pending">Väntar på svar</span>'
-      : a.answer==='yes' ? '<span class="badge b-yes">Ja</span>' : '<span class="badge b-no">Nej</span>';
+    const ansV = answerOf(a);
+    const ans = !ansV ? '' : ansV==='pending' ? '<span class="badge b-pending">Väntar på svar</span>'
+      : ansV==='yes' ? '<span class="badge b-yes">Ja</span>' : '<span class="badge b-no">Nej</span>';
     const siteShort = a.website ? esc(a.website.replace(/^https?:\/\//,'').replace(/\/$/,'').split('/')[0]) : '';
     return `<div class="card ${collapsed.has(a.id)?'collapsed':''} ${OUTCOME_CLS[outcome(a)]}" id="card-${a.id}">
       <div class="card-head" onclick="toggleCard('${a.id}')" title="Klicka för att visa/minimera detaljer">
@@ -411,7 +415,7 @@ function render(){
         <button class="toggle" aria-label="Visa/minimera detaljer">▾</button>
       </div>
       <div class="card-details">
-      <div class="badges">${a.businessType?`<span class="badge b-type">${typeLabel(a.businessType,true)}</span>`:''}${ans}${a.answerDate?`<span class="badge b-pending">Svar: ${esc(a.answerDate)}</span>`:''}</div>
+      <div class="badges">${a.businessType?`<span class="badge b-type">${typeLabel(a.businessType,true)}</span>`:''}${ans}${ansV && a.answerDate?`<span class="badge b-pending">Svar: ${esc(a.answerDate)}</span>`:''}</div>
       <div class="grid">
         <div><span class="lbl">Ansökningsdatum</span><span class="val">${esc(a.applyDate)||'—'}</span></div>
         <div><span class="lbl">Sista ansökningsdag</span><span class="val">${esc(a.deadline)||'—'}</span></div>
@@ -526,19 +530,94 @@ function importJSON(file){
     if (!Array.isArray(incoming)){ toast('Filen innehåller inga ansökningar'); return; }
     const valid = incoming.filter(a => a && a.company).map(a => ({...a, id:a.id||uid()}));
     if (!valid.length){ toast('Filen innehåller inga giltiga ansökningar'); return; }
-    const replace = apps.length ? $('importReplace').checked : true;
-    if (replace) apps = valid;
-    else {
-      const existing = new Set(apps.map(a=>a.id));
-      for (const a of valid){
-        if (existing.has(a.id)) a.id = uid();
-        apps.push(a);
-      }
-    }
-    save(); render();
-    toast('Importerade ' + valid.length + ' ansökningar ✔');
+    mergeImported(valid);
   };
   reader.readAsText(file);
+}
+
+function mergeImported(valid){
+  const replace = apps.length ? $('importReplace').checked : true;
+  if (replace) apps = valid;
+  else {
+    const existing = new Set(apps.map(a=>a.id));
+    for (const a of valid){
+      if (existing.has(a.id)) a.id = uid();
+      apps.push(a);
+    }
+  }
+  save(); render();
+  toast('Importerade ' + valid.length + ' ansökningar ✔');
+}
+
+const XLSX_HEADERS = {
+  'company':'company','företagsnamn':'company','företag':'company',
+  'applydate':'applyDate','ansökningsdatum':'applyDate',
+  'deadline':'deadline','sista ansökningsdag':'deadline','sista ansökningsdatum':'deadline',
+  'website':'website','webbplats':'website','hemsida':'website','länk':'website',
+  'status':'status',
+  'answer':'answer','svar':'answer','svar från företaget':'answer',
+  'answerdate':'answerDate','svarsdatum':'answerDate',
+  'city':'city','ort':'city',
+  'businesstype':'businessType','verksamhetstyp':'businessType','företagstyp':'businessType',
+  'contactname':'contactName','kontaktperson':'contactName','kontakt':'contactName','namn':'contactName',
+  'contacttitle':'contactTitle','titel':'contactTitle',
+  'contactemail':'contactEmail','e-post':'contactEmail','epost':'contactEmail','email':'contactEmail',
+  'contactphone':'contactPhone','telefon':'contactPhone','telefonnummer':'contactPhone','tel':'contactPhone',
+  'notes':'notes','anteckningar':'notes'
+};
+function normDate(v){
+  if (v instanceof Date && !isNaN(v)) return v.toISOString().slice(0,10);
+  if (typeof v === 'number' && isFinite(v)) return new Date(Math.round((v - 25569) * 86400000)).toISOString().slice(0,10);
+  const m = String(v ?? '').trim().match(/^(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : '';
+}
+function mapXlsxRow(row){
+  const raw = {};
+  for (const h of Object.keys(row)){
+    const f = XLSX_HEADERS[String(h).trim().toLowerCase()];
+    if (f) raw[f] = row[h];
+  }
+  const out = {};
+  for (const f of ['company','website','city','contactName','contactTitle','contactEmail','contactPhone','notes'])
+    out[f] = String(raw[f] ?? '').trim();
+  for (const f of ['applyDate','deadline','answerDate']) out[f] = normDate(raw[f]);
+  const st = String(raw.status ?? '').trim();
+  out.status = STATUSES.find(x => x.toLowerCase() === st.toLowerCase()) || st || 'Skickad';
+  const ans = String(raw.answer ?? '').trim().toLowerCase();
+  out.answer = ans.startsWith('ja') || ans === 'yes' ? 'yes'
+    : ans.startsWith('nej') || ans === 'no' ? 'no' : 'pending';
+  const bt = String(raw.businessType ?? '').trim().toLowerCase();
+  out.businessType = bt === 'consult' || bt === 'konsultbolag' ? 'consult'
+    : bt === 'product' || bt === 'produktbolag' ? 'product'
+    : bt === 'public' || bt === 'offentlig' ? 'public' : '';
+  if (out.status === 'Inte skickad'){ out.answer = 'pending'; out.answerDate = ''; }
+  else if (out.answer === 'pending') out.answerDate = '';
+  return out;
+}
+function loadXlsxLib(){
+  return new Promise((resolve, reject) => {
+    if (window.XLSX) return resolve();
+    const s = document.createElement('script');
+    s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('offline'));
+    document.head.appendChild(s);
+  });
+}
+async function importExcel(file){
+  try { await loadXlsxLib(); }
+  catch { toast('Kunde inte ladda Excel-stöd just nu (offline?) – importera JSON istället'); return; }
+  try {
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:'array'});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+    const valid = rows.map(mapXlsxRow).filter(a => a.company).map(a => ({...a, id:uid()}));
+    if (!valid.length){ toast('Filen innehåller inga giltiga ansökningar (kolumn för företagsnamn saknas?)'); return; }
+    mergeImported(valid);
+  } catch (err) {
+    toast('Kunde inte läsa Excel-filen');
+  }
 }
 
 function exportCSV(){
@@ -562,6 +641,12 @@ $('importBtn').onclick = () => $('importFile').click();
 $('importFile').addEventListener('change', e => {
   const f = e.target.files[0];
   if (f) importJSON(f);
+  e.target.value = '';
+});
+$('importExcelBtn').onclick = () => $('importExcelFile').click();
+$('importExcelFile').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) importExcel(f);
   e.target.value = '';
 });
 $('cancelBtn').onclick = () => $('modal').close();
